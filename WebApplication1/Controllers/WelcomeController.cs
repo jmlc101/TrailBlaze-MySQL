@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
                 return View();
             }
         }
-
+        // TODO - try rewriting to use the functions given below.
         // GET: Welcome/Details/5
         public ActionResult Details(int id)
         {
