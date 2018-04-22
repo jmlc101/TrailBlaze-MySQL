@@ -26,6 +26,11 @@ namespace WebApplication1
             services.AddDbContext<JMCapstoneDbContext>(options =>
     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(1);//You can set Time   
+            });
+
             services.AddMvc();
         }
 
@@ -43,6 +48,8 @@ namespace WebApplication1
             }
 
             app.UseStaticFiles();
+
+            app.UseSession(); // TODO - added as per "session" guide
 
             app.UseMvc(routes =>
             {

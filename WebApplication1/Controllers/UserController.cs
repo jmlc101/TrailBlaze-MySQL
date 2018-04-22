@@ -12,6 +12,7 @@ namespace WebApplication1.Controllers
 {
     public class UserController : Controller
     {
+        const string SessionEmail = "_Email";
         private JMCapstoneDbContext context;
         public UserController(JMCapstoneDbContext dbContext)
         {
@@ -21,6 +22,8 @@ namespace WebApplication1.Controllers
         // GET: User
         public ActionResult Index()
         {
+            ViewBag.SessionEmail = HttpContext.Session.GetString(SessionEmail);
+            ViewBag.answer = "yes";
             return View();
         }
 
@@ -62,7 +65,7 @@ namespace WebApplication1.Controllers
             if (ModelState.IsValid)
             {
                 string email = logOnViewModel.Email;
-                Session["Email"] = email;
+                HttpContext.Session.SetString(SessionEmail, email); // TODO - added as per session guide.
                 return Redirect("/User");
             }
             return View(logOnViewModel);
