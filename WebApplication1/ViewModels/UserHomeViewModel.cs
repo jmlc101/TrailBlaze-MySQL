@@ -7,5 +7,6 @@ namespace WebApplication1.ViewModels
 {
     public class UserHomeViewModel
     {
+        // TODO - NOT IN USE!!!
     }
 }
