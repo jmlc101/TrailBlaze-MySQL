@@ -5,18 +5,16 @@
     Layout = null;
 }
 
-@if (0 == 0)
+@if (ViewBag.UserScreenName != null)
 {
-    <a asp-controller="User" asp-action="index">User's Home Page</a>
+    <a asp-controller="User" asp-action="index">@ViewBag.UserScreenName's Home Page</a>
     <span>|</span>
     <a asp-controller="User" asp-action="LogOff">LogOff</a>
 
 }
-
-
 <h1>Welcome!</h1>
 <button type="button">Find Routes</button>
-@if (0 == 0)
+@if (ViewBag.Member != null)
 {
     <p>You're A Member? <a asp-controller="User" asp-action="logOn">Sign in!</a></p>
     <a asp-controller="User" asp-action="register">Become A Member!</a>

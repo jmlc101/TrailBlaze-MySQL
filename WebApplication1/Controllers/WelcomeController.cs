@@ -12,18 +12,18 @@ namespace WebApplication1.Controllers
         // GET: Welcome
         public ActionResult Index()
         {
-            string c00kie = "true";
-            if (c00kie == "true")
-                {
-                // TODO - Have ViewModel insert "User Home" and "LogOut" links if cookie for user session is detected.
-                return View();
-            }
-            else
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
             {
                 // TODO - if no cookie for user session, insert "Member" and "Become A Member" links.
+                ViewBag.Member = "hiddentest?";
                 return View();
             }
+            // TODO - Have ViewModel insert "User Home" and "LogOut" links if cookie for user session is detected.
+
+            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            return View();
         }
+        // TODO - ELIMINATE BAD PATHS BELOW!!!
         // TODO - try rewriting to use the functions given below.
         // GET: Welcome/Details/5
         public ActionResult Details(int id)

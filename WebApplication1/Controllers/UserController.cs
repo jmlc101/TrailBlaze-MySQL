@@ -21,6 +21,10 @@ namespace WebApplication1.Controllers
         // GET: User
         public ActionResult Index()
         {
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            {
+                return Redirect("/Welcome");
+            }
             ViewBag.SessionEmail = HttpContext.Session.GetString("_Email");
             ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
             ViewBag.answer = "yes";
@@ -29,6 +33,10 @@ namespace WebApplication1.Controllers
 
         public IActionResult Register()
         {
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            {
+                return Redirect("/Welcome");
+            }
             return View();
         }
         [HttpPost] // TODO - password validation.
@@ -52,6 +60,10 @@ namespace WebApplication1.Controllers
 
         public IActionResult Remove()
         {
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            {
+                return Redirect("/Welcome");
+            }
             return View();
         }
 
@@ -69,16 +81,22 @@ namespace WebApplication1.Controllers
                 string screenName = user.ScreenName;
                 HttpContext.Session.SetString("_Email", email); // TODO - added as per session guide.
                 HttpContext.Session.SetString("_ScreenName", screenName); 
-                return Redirect("/User");
+                return Redirect("/Welcome");
             }
             return View(logOnViewModel);
         }
 
         public IActionResult LogOff()
         {
-            return View();
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            {
+                return Redirect("/Welcome");
+            }
+            HttpContext.Session.Clear();
+            // TODO - Need a before action handler that checks if user's logged on.
+            return Redirect("/User");
         }
-
+        // TODO - ELIMINATE BAD PATHWAYS BELOW!!!
         // TODO - try rewriting to use the functions given below.
         // GET: User/Details/5
         public ActionResult Details(int id)
