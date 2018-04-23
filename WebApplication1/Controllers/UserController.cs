@@ -33,10 +33,6 @@ namespace WebApplication1.Controllers
 
         public IActionResult Register()
         {
-            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
-            {
-                return Redirect("/Welcome");
-            }
             return View();
         }
         [HttpPost] // TODO - password validation.
@@ -77,11 +73,20 @@ namespace WebApplication1.Controllers
             if (ModelState.IsValid)
             {
                 string email = logOnViewModel.Email;
-                User user = context.Users.First(u => u.Email == email);
-                string screenName = user.ScreenName;
-                HttpContext.Session.SetString("_Email", email); // TODO - added as per session guide.
-                HttpContext.Session.SetString("_ScreenName", screenName); 
-                return Redirect("/Welcome");
+                try
+                {
+                    User user = context.Users.First(u => u.Email == email);
+                    string screenName = user.ScreenName;
+                    HttpContext.Session.SetString("_Email", email); // TODO - added as per session guide.
+                    HttpContext.Session.SetString("_ScreenName", screenName);
+                    return Redirect("/Welcome");
+                }
+                catch (InvalidOperationException)
+                {
+                    ViewBag.Error = "Not a Valid User. Please try another, or ";
+                    ViewBag.RegisterLink = "Register Here.";
+                    return View(); // TODO - pass threw message that user was invalid?
+                }  
             }
             return View(logOnViewModel);
         }

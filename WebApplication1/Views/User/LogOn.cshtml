@@ -21,5 +21,10 @@ LogOn!!!
     </div>
 
     <input type="submit" value="Sign In!" />
+    @if (ViewBag.Error != null)
+    {
+        <p>@ViewBag.Error<a asp-controller="User" asp-action="Register">@ViewBag.RegisterLink</a></p>
+
+    }
 
 </form>
