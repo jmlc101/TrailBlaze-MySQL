@@ -35,7 +35,7 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
-        [HttpPost] // TODO - password validation.
+        [HttpPost] // TODO - Need Better validation on all entry Fields!!.
         public IActionResult Register(RegisterUserViewModel registerUserViewModel)
         {
             if (ModelState.IsValid)
