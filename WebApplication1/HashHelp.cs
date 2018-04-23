@@ -28,7 +28,7 @@ namespace WebApplication1
             byte[] dst = new byte[src.Length + bytes.Length];
             System.Buffer.BlockCopy(src, 0, dst, 0, src.Length);
             System.Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
-            HashAlgorithm algorithm = HashAlgorithm.Create("SHA1");
+            HashAlgorithm algorithm = (HashAlgorithm)CryptoConfig.CreateFromName("SHA1");// TODO - CHECK! Works! Thanks https://github.com/dotnet/corefx/issues/22626
             byte[] inArray = algorithm.ComputeHash(dst);
             //return Convert.ToBase64String(inArray);    
             return EncodePasswordMd5(Convert.ToBase64String(inArray));

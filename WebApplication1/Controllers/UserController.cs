@@ -51,6 +51,9 @@ namespace WebApplication1.Controllers
                 };
                 context.Users.Add(newUser);
                 context.SaveChanges();
+                HttpContext.Session.Clear();
+                HttpContext.Session.SetString("_Email", registerUserViewModel.Email); // TODO - added as per session guide.
+                HttpContext.Session.SetString("_ScreenName", registerUserViewModel.ScreenName);
                 return Redirect("/User");
             }
             return View(registerUserViewModel);
@@ -82,6 +85,7 @@ namespace WebApplication1.Controllers
                 {
                     User user = context.Users.First(u => u.Email == email);
                     string screenName = user.ScreenName;
+                    HttpContext.Session.Clear();
                     HttpContext.Session.SetString("_Email", email); // TODO - added as per session guide.
                     HttpContext.Session.SetString("_ScreenName", screenName);
                     return Redirect("/Welcome");
