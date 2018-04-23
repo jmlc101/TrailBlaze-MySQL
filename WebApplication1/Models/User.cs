@@ -13,6 +13,6 @@ namespace WebApplication1.Models
         public string PhoneNumber { get; set; }
 
         // TODO - Make sure password Hash.
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
     }
 }

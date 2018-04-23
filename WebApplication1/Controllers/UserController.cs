@@ -40,11 +40,13 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
+                var newSalt = HashHelp.GeneratePassword(10);
+                var passwordHash = HashHelp.EncodePassword(registerUserViewModel.Password, newSalt);
                 User newUser = new User
                 {
                     ScreenName = registerUserViewModel.ScreenName,
                     Email = registerUserViewModel.Email,
-                    Password = registerUserViewModel.Password,
+                    PasswordHash = passwordHash,
                     PhoneNumber = registerUserViewModel.PhoneNumber
                 };
                 context.Users.Add(newUser);
@@ -73,6 +75,9 @@ namespace WebApplication1.Controllers
             if (ModelState.IsValid)
             {
                 string email = logOnViewModel.Email;
+
+                // TODO - if (chkUser == null) {} ....
+                //var getUser = (from s in context.ObjRegisterUser where s.UserName == userName || s.EmailId == userName select s).FirstOrDefault(); (((( Just an example for ideas that I copied))
                 try
                 {
                     User user = context.Users.First(u => u.Email == email);
@@ -83,9 +88,9 @@ namespace WebApplication1.Controllers
                 }
                 catch (InvalidOperationException)
                 {
-                    ViewBag.Error = "Not a Valid User. Please try another, or ";
+                    ViewBag.Error = "Exception Occurred. Probably Not a Valid User. Please try another, or ";
                     ViewBag.RegisterLink = "Register Here.";
-                    return View(); // TODO - pass threw message that user was invalid?
+                    return View(); // TODO - Lets consider better ways to validate User query? Maybe a if (chkUser) {} statement above?
                 }  
             }
             return View(logOnViewModel);
