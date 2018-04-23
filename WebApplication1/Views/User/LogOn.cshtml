@@ -21,9 +21,9 @@ LogOn!!!
     </div>
 
     <input type="submit" value="Sign In!" />
-    @if (ViewBag.Error != null)
+    @if (ViewBag.ErrorMessage != null)
     {
-        <p>@ViewBag.Error<a asp-controller="User" asp-action="Register">@ViewBag.RegisterLink</a></p>
+        <p>@ViewBag.ErrorMessage<a asp-controller="User" asp-action="Register">Sign Up Here!</a></p>
 
     }
 

@@ -47,8 +47,11 @@ namespace WebApplication1.Controllers
                     ScreenName = registerUserViewModel.ScreenName,
                     Email = registerUserViewModel.Email,
                     PasswordHash = passwordHash,
+                    HashCode = newSalt,
+                    CreationTime = DateTime.Now,
+                    ModificationTime = DateTime.Now,
                     PhoneNumber = registerUserViewModel.PhoneNumber
-                };
+                };// TODO - Why would I need to "Clear a ModelState"?
                 context.Users.Add(newUser);
                 context.SaveChanges();
                 HttpContext.Session.Clear();
@@ -78,24 +81,30 @@ namespace WebApplication1.Controllers
             if (ModelState.IsValid)
             {
                 string email = logOnViewModel.Email;
-
+                string password = logOnViewModel.Password;
                 // TODO - if (chkUser == null) {} ....
                 //var getUser = (from s in context.ObjRegisterUser where s.UserName == userName || s.EmailId == userName select s).FirstOrDefault(); (((( Just an example for ideas that I copied))
-                try
+                var getUser = (from s in context.Users where s.Email == email || s.PasswordHash == email select s).FirstOrDefault();
+                if (getUser != null)
                 {
-                    User user = context.Users.First(u => u.Email == email);
-                    string screenName = user.ScreenName;
-                    HttpContext.Session.Clear();
-                    HttpContext.Session.SetString("_Email", email); // TODO - added as per session guide.
-                    HttpContext.Session.SetString("_ScreenName", screenName);
-                    return Redirect("/Welcome");
+                    var hashCode = getUser.HashCode;
+                    //Password Hasing Process Call Helper Class Method    
+                    var encodingPasswordString = HashHelp.EncodePassword(password, hashCode);
+                    //Check Login Detail User Name Or Password    
+                    var query = (from s in context.Users where (s.Email == email || s.PasswordHash == email) && s.PasswordHash.Equals(encodingPasswordString) select s).FirstOrDefault();
+                    if (query != null)
+                    {
+                        string screenName = getUser.ScreenName;
+                        HttpContext.Session.Clear();
+                        HttpContext.Session.SetString("_Email", email); // TODO - added as per session guide.
+                        HttpContext.Session.SetString("_ScreenName", screenName);
+                        return Redirect("/Welcome");
+                    }
+                    ViewBag.ErrorMessage = "Invallid User Name or Password";
+                    return View();
                 }
-                catch (InvalidOperationException)
-                {
-                    ViewBag.Error = "Exception Occurred. Probably Not a Valid User. Please try another, or ";
-                    ViewBag.RegisterLink = "Register Here.";
-                    return View(); // TODO - Lets consider better ways to validate User query? Maybe a if (chkUser) {} statement above?
-                }  
+                ViewBag.ErrorMessage = "Invalllid User Name or Password";
+                return View();
             }
             return View(logOnViewModel);
         }

@@ -12,7 +12,9 @@ namespace WebApplication1.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
 
-        // TODO - Make sure password Hash.
         public string PasswordHash { get; set; }
+        public string HashCode { get; set; }
+        public DateTime CreationTime { get; set; }
+        public DateTime ModificationTime { get; set; }
     }
 }
