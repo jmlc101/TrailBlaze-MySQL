@@ -4,18 +4,39 @@
 @{
     
 }
+<div class="row">
+    <div class="col-3 menu">
+    </div>
 
-@if (ViewBag.UserScreenName != null)
-{
-    <a asp-controller="User" asp-action="index">@ViewBag.UserScreenName's Home Page</a>
-    <span>|</span>
-    <a asp-controller="User" asp-action="LogOff">LogOff</a>
-
-}
+<div class="welcomeClass">
+<div class="col-6">
 <h1>Welcome!</h1>
-<button type="button">Find Routes</button>
-@if (ViewBag.Member != null)
-{
-    <p>You're A Member? <a asp-controller="User" asp-action="logOn">Sign in!</a></p>
-    <a asp-controller="User" asp-action="register">Become A Member!</a>
-}
+</div>
+
+    <div class="col-3">
+
+    </div>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-3 menu">
+    </div>
+
+    <div class="welcomeClass">
+        <div class="col-6">
+            <button type="button" id="one">Find Routes</button>
+            @if (ViewBag.Member != null)
+            {
+            <p>Member's should <a asp-controller="User" asp-action="logOn">Log On.</a> </p>
+            <a asp-controller="User" asp-action="register">Sign Up! It's Free!</a>
+            }
+        </div>
+        <div class="col-3">
+
+        </div>
+
+    </div>
+
+</div>
+<br />

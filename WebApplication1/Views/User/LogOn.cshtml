@@ -5,26 +5,48 @@
 @{
 
 }
-LogOn!!!
-
-<form asp-controller="User" asp-action="LogOn" method="post">
-
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input class="form-control" asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+<div class="row">
+    <div class="col-3 menu">
     </div>
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input class="form-control" asp-for="Password" />
-        <span asp-validation-for="Password"></span>
+    <div class="col-6">
+
+        LogOn!!!
+
     </div>
+    <div class="col-3">
 
-    <input type="submit" value="Sign In!" />
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <p>@ViewBag.ErrorMessage<a asp-controller="User" asp-action="Register">Sign Up Here!</a></p>
+    </div>
+</div>
 
-    }
 
-</form>
+<div class="row">
+    <div class="col-3 menu">
+    </div>
+    <div class="col-6">
+
+        <form asp-controller="User" asp-action="LogOn" method="post">
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input class="form-control" asp-for="Email" />
+                <span asp-validation-for="Email"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input class="form-control" asp-for="Password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <input type="submit" value="Sign In!" />
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p>@ViewBag.ErrorMessage<a asp-controller="User" asp-action="Register">Sign Up Here!</a></p>
+
+            }
+
+        </form>
+    </div>
+    <div class="col-3">
+
+    </div>
+</div>
