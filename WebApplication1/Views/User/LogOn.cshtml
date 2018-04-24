@@ -10,7 +10,7 @@
     </div>
     <div class="col-6">
 
-        LogOn!!!
+        LogOn:
 
     </div>
     <div class="col-3">
@@ -37,12 +37,14 @@
                 <span asp-validation-for="Password"></span>
             </div>
 
-            <input type="submit" value="Sign In!" />
+            <input id="two" type="submit" value="Sign In!" />
+            <p>Not a Member? 
+            <a asp-controller="User" asp-action="register">Sign Up! It's Free!</a></p>
             @if (ViewBag.ErrorMessage != null)
-            {
-                <p>@ViewBag.ErrorMessage<a asp-controller="User" asp-action="Register">Sign Up Here!</a></p>
+    {
+        <p>@ViewBag.ErrorMessage<a asp-controller="User" asp-action="Register">Sign Up Here!</a></p>
 
-            }
+}
 
         </form>
     </div>

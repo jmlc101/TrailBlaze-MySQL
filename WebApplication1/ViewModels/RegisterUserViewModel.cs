@@ -21,6 +21,7 @@ namespace WebApplication1.ViewModels
         [Display(Name = "Password")]
         public string Password { get; set; }
 
+        [Display(Name = "Phonenumber (Optional)")]
         public string PhoneNumber { get; set; }
 
         // TODO - Need this "default constructor" for methods later...? look into.

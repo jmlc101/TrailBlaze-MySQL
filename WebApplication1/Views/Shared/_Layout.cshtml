@@ -15,7 +15,7 @@
 
         header {
             background-color: orange;
-            color: #ffffff;
+            color: black;
             padding: 10px;
             margin: 10px;
         }
@@ -29,9 +29,7 @@
         .menu li {
             padding: 8px;
             margin-bottom: 7px;
-            background-color: #33b5e5;
             color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         }
         .row::after {
             content: "";
@@ -42,7 +40,7 @@
         [class*="col-"] {
             float: left;
             padding: 15px;
-            border: 1px solid red;
+            /* border: 1px solid red;  commenting this out caused "Unterminated string literal" error?????*/
         }
 
         .col-1 {
@@ -165,6 +163,9 @@
         }
         a:hover {
             color: #ffffff;
+        }
+        .form-group{
+            margin: 5px;
         }
     </style>
 

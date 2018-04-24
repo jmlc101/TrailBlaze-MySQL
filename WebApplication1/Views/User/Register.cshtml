@@ -10,7 +10,7 @@
     <div class="col-3 menu">
     </div>
     <div class="col-6">
-        Register!!!
+        Register:
     </div>
     <div class="col-3">
 
@@ -41,11 +41,12 @@
             <div class="form-group">
                 <label asp-for="PhoneNumber"></label>
                 <input class="form-control" asp-for="PhoneNumber" />
+                <span>(Optional)</span>
                 <span asp-validation-for="PhoneNumber"></span>
             </div>
 
 
-            <input type="submit" value="Register!" />
+            <input id="two" type="submit" value="Register!" />
 
         </form>
     </div>

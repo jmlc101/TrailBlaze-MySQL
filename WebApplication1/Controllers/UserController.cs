@@ -100,10 +100,10 @@ namespace WebApplication1.Controllers
                         HttpContext.Session.SetString("_ScreenName", screenName);
                         return Redirect("/Welcome");
                     }
-                    ViewBag.ErrorMessage = "Invallid User Name or Password";
+                    ViewBag.ErrorMessage = "Invalid User Name and/or Password ";
                     return View();
                 }
-                ViewBag.ErrorMessage = "Invalllid User Name or Password";
+                ViewBag.ErrorMessage = "Invalid User Name and/or Password ";
                 return View();
             }
             return View(logOnViewModel);

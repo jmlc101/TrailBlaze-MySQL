@@ -25,7 +25,7 @@
 
     <div class="welcomeClass">
         <div class="col-6">
-            <button type="button" id="one">Find Routes</button>
+            <input id="one" type="button" value="Find Routes" onclick="location.href='@Url.Action("Index", "User")'" />
             @if (ViewBag.Member != null)
             {
             <p>Member's should <a asp-controller="User" asp-action="logOn">Log On.</a> </p>
