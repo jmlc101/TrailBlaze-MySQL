@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.ViewModels;
@@ -12,10 +13,13 @@ namespace WebApplication1.Controllers
 {
     public class RouteController : Controller
     {
+        private Secrets _secrets { get; }
+
         private JMCapstoneDbContext context;
-        public RouteController(JMCapstoneDbContext dbContext)
+        public RouteController(JMCapstoneDbContext dbContext, IOptions<Secrets> secrets)
         {
             context = dbContext;
+            this._secrets = secrets.Value;
         }
 
         // GET: Route
@@ -437,6 +441,15 @@ namespace WebApplication1.Controllers
 
         public ActionResult DisplaySelectRoute(int id)
         {
+            
+
+
+            ViewData["ApiKey"] = string.IsNullOrEmpty(this._secrets.MySecret)
+                ? "Are you in production?"
+                : this._secrets.MySecret;
+            ViewBag.ApiKey = ViewData["ApiKey"];
+            string testApistring = (ViewData["ApiKey"]).ToString();
+
             Route theRoute = context.Routes.Single(c => c.ID == id);
             ViewBag.Origin = theRoute.Origin;
             ViewBag.Waypoints = theRoute.Waypoints;
@@ -460,6 +473,16 @@ namespace WebApplication1.Controllers
                     ViewBag.UserID = getUser.ID;
                 }
             }
+
+            
+            //string test = "https://www.google.com/maps/embed/v1/directions?origin={0} & waypoints = {1} & destination = {2} & key ={3}";
+            string test2 = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, ViewData["ApiKey"]);
+            string aString = string.Format("<iframe width='580' height='420' frameborder='0' style='border: 0' src='{0}'></iframe>", test2);
+            ViewBag.Test = test2;
+            ViewBag.TestB = aString;
+
+            
+
             return View();
         }
 
