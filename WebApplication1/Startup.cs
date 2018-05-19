@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,8 @@ namespace WebApplication1
 {
     public class Startup
     {
+        private string _apiKey = null;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +26,8 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            _apiKey = Configuration["MySecret"];
+
             services.AddDbContext<JMCapstoneDbContext>(options =>
     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -37,6 +42,15 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // Note: A test to see that Secret is "Not Null".
+            /*
+            var result = string.IsNullOrEmpty(_apiKey) ? "Null" : "Not Null";
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync($"Secret is {result}");
+            });
+            */
+
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
