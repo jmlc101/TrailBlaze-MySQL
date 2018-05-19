@@ -13,6 +13,7 @@ namespace WebApplication1.Controllers
 {
     public class RouteController : Controller
     {
+        
         private Secrets _secrets { get; }
 
         private JMCapstoneDbContext context;
