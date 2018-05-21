@@ -31,13 +31,45 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        public ActionResult DisplayFavorites()
+        {
+            var email = HttpContext.Session.GetString("_Email");
+            User getUser = context.Users.Single(u => u.Email == email);
+            if (getUser == null)
+            {
+
+            }
+            else
+            {
+                IList<UserRoute> existingFavoriteRelationships = context.UserRoutes
+                    .Where(ur => ur.UserID == getUser.ID).ToList();
+                List<string> routeNames = new List<string>();
+                List<Route> routes = new List<Route>();
+                foreach (UserRoute userRoute in existingFavoriteRelationships)
+                {
+                    int routeID = userRoute.RouteID;
+                    Route route = context.Routes.Single(r => r.ID == routeID);
+                    routes.Add(route);
+                    string routeName = route.RouteName;
+                    routeNames.Add(routeName);
+
+                }
+                // ViewBag.Favorites = routeNames;
+                ViewBag.FavoriteRoutes = routes;
+                ViewBag.Favorites = existingFavoriteRelationships; 
+                return View("Index");
+            }
+
+            return Redirect("/User");
+        }
+
         public IActionResult Register()
         {
             return View();
         }
         [HttpPost] // TODO - Need Better validation on all entry Fields!!.
         public IActionResult Register(RegisterUserViewModel registerUserViewModel)
-        {
+        {//TODO - Need to check to see if user already exists in database!
             if (ModelState.IsValid)
             {
                 var newSalt = HashHelp.GeneratePassword(10);
