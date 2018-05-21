@@ -484,19 +484,19 @@ namespace WebApplication1.Controllers
             else
             {
                 //TODO - Form DB relationship between User and Route.
-                int userID = saveFavoriteRouteViewModel.UserID;
-                int routeID = saveFavoriteRouteViewModel.RouteID;
+                int userId = saveFavoriteRouteViewModel.UserID;
+                int routeId = saveFavoriteRouteViewModel.RouteID;
                 IList<UserRoute> existingItems = context.UserRoutes
-                    .Where(ur => ur.UserID == userID)
-                    .Where(ur => ur.RouteID == routeID).ToList();
+                    .Where(ur => ur.UserID == userId)
+                    .Where(ur => ur.RouteID == routeId).ToList();
                 if (existingItems.Count == 0)
                 {
                     //var userID = saveFavoriteRouteViewModel.UserID;
                     //var routeID = saveFavoriteRouteViewModel.RouteID;
                     UserRoute favRoute = new UserRoute
                     {
-                        User = context.Users.Single(u => u.ID == userID),
-                        Route = context.Routes.Single(r => r.ID == routeID)
+                        User = context.Users.Single(u => u.ID == userId),
+                        Route = context.Routes.Single(r => r.ID == routeId)
                     };
                     context.UserRoutes.Add(favRoute);
                     context.SaveChanges();
@@ -506,9 +506,22 @@ namespace WebApplication1.Controllers
             return Redirect("/User/DisplayFavorites");
         }
 
-        public ActionResult RemoveFavoriteRoute()
+        public ActionResult RemoveFavoriteRoute(int id)
         {
-            return View();
+            string email = HttpContext.Session.GetString("_Email");
+            User user = context.Users.Single(u => u.Email == email);
+            IList<UserRoute> existingItems = context.UserRoutes
+                    .Where(ur => ur.UserID == user.ID)
+                    .Where(ur => ur.RouteID == id).ToList();
+            if ( existingItems.Count != 0)
+            {
+                foreach (UserRoute item in existingItems)
+                {
+                    context.UserRoutes.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            return Redirect("/User/DisplayFavorites");
         }
 
         // TODO - ELIMINATE BAD PATHWAYS BELOW!!!
