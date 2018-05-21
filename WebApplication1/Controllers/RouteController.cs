@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.ViewModels;
@@ -12,10 +13,14 @@ namespace WebApplication1.Controllers
 {
     public class RouteController : Controller
     {
+        
+        private Secrets _secrets { get; }
+
         private JMCapstoneDbContext context;
-        public RouteController(JMCapstoneDbContext dbContext)
+        public RouteController(JMCapstoneDbContext dbContext, IOptions<Secrets> secrets)
         {
             context = dbContext;
+            this._secrets = secrets.Value;
         }
 
         // GET: Route
@@ -437,6 +442,12 @@ namespace WebApplication1.Controllers
 
         public ActionResult DisplaySelectRoute(int id)
         {
+            ViewData["ApiKey"] = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
+                ? "Are you in production?"
+                : this._secrets.MySecret;
+            ViewBag.ApiKey = ViewData["ApiKey"];
+            string testApistring = (ViewData["ApiKey"]).ToString();
+
             Route theRoute = context.Routes.Single(c => c.ID == id);
             ViewBag.Origin = theRoute.Origin;
             ViewBag.Waypoints = theRoute.Waypoints;
@@ -444,9 +455,8 @@ namespace WebApplication1.Controllers
             ViewBag.Review = theRoute.Review;
             ViewBag.RouteID = theRoute.ID;
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
-            // var getUser = (from s in context.Users where s.ScreenName == "_ScreenName" || s.Email == "_ScreenName" select s).FirstOrDefault();
-            var email = HttpContext.Session.GetString("_Email");
 
+            var email = HttpContext.Session.GetString("_Email");
             var sessionTest = HttpContext.Session.GetString("_Email"); // TODO - Check out this 2 line session test, any better ways?
             if (sessionTest != null)
             { 
@@ -460,6 +470,7 @@ namespace WebApplication1.Controllers
                     ViewBag.UserID = getUser.ID;
                 }
             }
+
             return View();
         }
 
