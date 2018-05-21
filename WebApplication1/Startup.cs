@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,6 +53,14 @@ namespace WebApplication1
                 await context.Response.WriteAsync($"Secret is {result}");
             });
             */
+
+            // TODO - added as per: https://stackoverflow.com/questions/28664686/how-do-i-get-client-ip-address-in-asp-net-core
+            // had to add dependency to "Microsoft.AspNetCore.HttpOverrides": "2.0.2" in .csproj
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+            ForwardedHeaders.XForwardedProto
+            });
 
             if (env.IsDevelopment())
             {

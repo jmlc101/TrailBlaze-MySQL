@@ -12,6 +12,10 @@ namespace WebApplication1.Controllers
         // GET: Welcome
         public ActionResult Index()
         {
+            // TODO - https://stackoverflow.com/questions/28664686/how-do-i-get-client-ip-address-in-asp-net-core
+            // TODO - This doesn't actually appear to return an Ip Address yet. Will have to fiddle with when it's deployed?
+            System.Net.IPAddress ipAddress = Request.HttpContext.Connection.RemoteIpAddress;
+
             if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
             {
                 // TODO - if no cookie for user session, insert "Member" and "Become A Member" links.

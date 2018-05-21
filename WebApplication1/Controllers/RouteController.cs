@@ -13,7 +13,7 @@ namespace WebApplication1.Controllers
 {
     public class RouteController : Controller
     {
-        
+        // TODO - keep track of hosting environment and its importance!
         private Secrets _secrets { get; }
 
         private JMCapstoneDbContext context;
