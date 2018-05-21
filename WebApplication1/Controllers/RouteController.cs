@@ -484,13 +484,15 @@ namespace WebApplication1.Controllers
             else
             {
                 //TODO - Form DB relationship between User and Route.
+                int userID = saveFavoriteRouteViewModel.UserID;
+                int routeID = saveFavoriteRouteViewModel.RouteID;
                 IList<UserRoute> existingItems = context.UserRoutes
-                    .Where(ur => ur.UserID == saveFavoriteRouteViewModel.UserID)
-                    .Where(ur => ur.RouteID == saveFavoriteRouteViewModel.RouteID).ToList();
+                    .Where(ur => ur.UserID == userID)
+                    .Where(ur => ur.RouteID == routeID).ToList();
                 if (existingItems.Count == 0)
                 {
-                    var userID = saveFavoriteRouteViewModel.UserID;
-                    var routeID = saveFavoriteRouteViewModel.RouteID;
+                    //var userID = saveFavoriteRouteViewModel.UserID;
+                    //var routeID = saveFavoriteRouteViewModel.RouteID;
                     UserRoute favRoute = new UserRoute
                     {
                         User = context.Users.Single(u => u.ID == userID),
