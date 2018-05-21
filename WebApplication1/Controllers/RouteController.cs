@@ -442,19 +442,13 @@ namespace WebApplication1.Controllers
 
         public ActionResult DisplaySelectRoute(int id)
         {
-            ViewData["ApiKey"] = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
+            string apiKey = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
                 ? "Are you in production?"
                 : this._secrets.MySecret;
-            ViewBag.ApiKey = ViewData["ApiKey"];
-            string testApistring = (ViewData["ApiKey"]).ToString();
-
             Route theRoute = context.Routes.Single(c => c.ID == id);
-            ViewBag.Origin = theRoute.Origin;
-            ViewBag.Waypoints = theRoute.Waypoints;
-            ViewBag.Destination = theRoute.Destination;
+            ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
             ViewBag.Review = theRoute.Review;
-            ViewBag.RouteID = theRoute.ID;
-            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            ViewBag.RouteID = theRoute.ID; // TODO - Can I just pass "theRoute" threw thew View to the and form submission to next controller?
 
             var email = HttpContext.Session.GetString("_Email");
             var sessionTest = HttpContext.Session.GetString("_Email"); // TODO - Check out this 2 line session test, any better ways?
