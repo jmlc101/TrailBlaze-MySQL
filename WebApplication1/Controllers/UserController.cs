@@ -56,7 +56,8 @@ namespace WebApplication1.Controllers
                 }
                 // ViewBag.Favorites = routeNames;
                 ViewBag.FavoriteRoutes = routes;
-                ViewBag.Favorites = existingFavoriteRelationships; 
+                ViewBag.Favorites = existingFavoriteRelationships;
+                ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
                 return View("Index");
             }
 
