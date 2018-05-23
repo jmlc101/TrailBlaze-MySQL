@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +16,7 @@ namespace WebApplication1.Controllers
 {
     public class RouteController : Controller
     {
-        
+        // TODO - keep track of hosting environment and its importance!
         private Secrets _secrets { get; }
 
         private JMCapstoneDbContext context;
@@ -427,18 +430,83 @@ namespace WebApplication1.Controllers
                     Destination = destination,
                     Review = saveRouteViewModel.Review, // TODO - change this to a list of User's reviews somehow.
                 };// TODO - Why would I need to "Clear a ModelState"?
-                context.Routes.Add(newRoute);
-                context.SaveChanges();
+                //////////////// Serialize the newRoute
+                IFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream("MyFile.bin",
+                                         FileMode.Create,
+                                         FileAccess.Write, FileShare.None);
+                formatter.Serialize(stream, newRoute);
+                stream.Close();
+               
+                ////////////////////
+
+
+                //context.Routes.Add(newRoute);
+                //context.SaveChanges();
 
                 ViewBag.Origin = origin; // TODO - I'm not sure I need these 3 lines anymore...
                 ViewBag.Waypoints = waypoints;
                 ViewBag.Destination = destination;
 
-                return RedirectToAction("DisplaySelectRoute", new { id = newRoute.ID }); ; // TODO - NEED to REDIRECT TO A CONFIRMATION PAGE TO VERIFY THE MAPPED ROUTE FOR THE USER!!!!!
+                string userEmail = HttpContext.Session.GetString("_Email");
+                User user = context.Users.Single(u => u.Email == userEmail);
+                ViewBag.UserId = user.ID;
+
+                //return RedirectToAction("DisplaySelectRoute", new { id = newRoute.ID }); // TODO - NEED to REDIRECT TO A CONFIRMATION PAGE TO VERIFY THE MAPPED ROUTE FOR THE USER!!!!!
+                return Redirect("/Route/SubmitRoute");
             }
             return View(saveRouteViewModel);
         }
 
+        
+        public ActionResult SubmitRoute()
+        {
+            /////////Deserialize the newRoute
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("MyFile.bin",
+                                      FileMode.Open,
+                                      FileAccess.Read,
+                                      FileShare.Read);
+            Route route = (Route)formatter.Deserialize(stream);
+            stream.Close();
+
+            /////////
+
+            string apiKey = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
+                ? "Are you in production?"
+                : this._secrets.MySecret;
+            Route theRoute = route;
+            ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
+            ViewBag.Review = theRoute.Review;
+
+
+
+            // Serialize again for next method
+            //IFormatter formatter = new BinaryFormatter();
+            Stream stream2 = new FileStream("MyFile.bin",
+                                     FileMode.Create,
+                                     FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream2, theRoute);
+            stream2.Close();
+            //////
+            return View();
+        }
+        [HttpPost]
+        public ActionResult SubmitRoute(SubmitRouteViewModel submitRouteViewModel)
+        {
+            //De serialize again
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream2 = new FileStream("MyFile.bin",
+                                      FileMode.Open,
+                                      FileAccess.Read,
+                                      FileShare.Read);
+            Route route = (Route)formatter.Deserialize(stream2);
+            stream2.Close();
+            //
+            context.Routes.Add(route);
+            context.SaveChanges();
+            return Redirect("/User");
+        }
 
         public ActionResult DisplaySelectRoute(int id)
         {
@@ -484,17 +552,19 @@ namespace WebApplication1.Controllers
             else
             {
                 //TODO - Form DB relationship between User and Route.
+                int userId = saveFavoriteRouteViewModel.UserID;
+                int routeId = saveFavoriteRouteViewModel.RouteID;
                 IList<UserRoute> existingItems = context.UserRoutes
-                    .Where(ur => ur.UserID == saveFavoriteRouteViewModel.UserID)
-                    .Where(ur => ur.RouteID == saveFavoriteRouteViewModel.RouteID).ToList();
+                    .Where(ur => ur.UserID == userId)
+                    .Where(ur => ur.RouteID == routeId).ToList();
                 if (existingItems.Count == 0)
                 {
-                    var userID = saveFavoriteRouteViewModel.UserID;
-                    var routeID = saveFavoriteRouteViewModel.RouteID;
+                    //var userID = saveFavoriteRouteViewModel.UserID;
+                    //var routeID = saveFavoriteRouteViewModel.RouteID;
                     UserRoute favRoute = new UserRoute
                     {
-                        User = context.Users.Single(u => u.ID == userID),
-                        Route = context.Routes.Single(r => r.ID == routeID)
+                        User = context.Users.Single(u => u.ID == userId),
+                        Route = context.Routes.Single(r => r.ID == routeId)
                     };
                     context.UserRoutes.Add(favRoute);
                     context.SaveChanges();
@@ -504,9 +574,22 @@ namespace WebApplication1.Controllers
             return Redirect("/User/DisplayFavorites");
         }
 
-        public ActionResult RemoveFavoriteRoute()
+        public ActionResult RemoveFavoriteRoute(int id)
         {
-            return View();
+            string email = HttpContext.Session.GetString("_Email");
+            User user = context.Users.Single(u => u.Email == email);
+            IList<UserRoute> existingItems = context.UserRoutes
+                    .Where(ur => ur.UserID == user.ID)
+                    .Where(ur => ur.RouteID == id).ToList();
+            if ( existingItems.Count != 0)
+            {
+                foreach (UserRoute item in existingItems)
+                {
+                    context.UserRoutes.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            return Redirect("/User/DisplayFavorites");
         }
 
         // TODO - ELIMINATE BAD PATHWAYS BELOW!!!

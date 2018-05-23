@@ -259,3 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/WebApplication1/Views/Route/SaveRouteToDatabase.cshtml
+/WebApplication1/Views/Route/ConfirmRouteSubmission.cshtml
+/WebApplication1/ViewModels/SaveRouteToDatabaseViewModel.cs
