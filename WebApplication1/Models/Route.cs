@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
+    [Serializable]
     public class Route
     {
         public int ID { get; set; }
