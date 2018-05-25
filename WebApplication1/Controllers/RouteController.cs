@@ -533,6 +533,7 @@ namespace WebApplication1.Controllers
                 }
             }
 
+            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
             return View();
         }
 
