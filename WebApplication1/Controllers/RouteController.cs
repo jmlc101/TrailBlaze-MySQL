@@ -505,6 +505,9 @@ namespace WebApplication1.Controllers
             //
             context.Routes.Add(route);
             context.SaveChanges();
+            
+            TempData["Alert"] = "The Ride Route has been added to Database!";
+            
             return Redirect("/User");
         }
 
@@ -569,6 +572,9 @@ namespace WebApplication1.Controllers
                     };
                     context.UserRoutes.Add(favRoute);
                     context.SaveChanges();
+
+                    TempData["Alert"] = "The Ride Route has been added to Your Favorites!";
+
                     return Redirect("/User/DisplayFavorites");
                 }
             }

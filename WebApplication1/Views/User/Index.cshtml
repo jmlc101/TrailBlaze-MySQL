@@ -23,6 +23,13 @@
     </div>
 
     <div class="col-6">
+        @if  (ViewBag.DbSubmissionAlert != null)
+        {
+            <div class="error-alert">
+            @ViewBag.DbSubmissionAlert
+            </div>
+
+        }
             @if (ViewBag.Favorites != null)
             {
                 <table>
