@@ -8,11 +8,14 @@ namespace WebApplication1.ViewModels
 {
     public class RegisterUserViewModel
     {
-        [Required(ErrorMessage = "Must choose Screen Name.")]
+        [Required(ErrorMessage = "Must enter Screen Name.")]
+        [RegularExpression(@"^[a-zA-Z][a-zA-Z0-9]{5,11}", ErrorMessage = "Invalid Screen Name.")]
         [Display(Name = "Screen Name")]
         public string ScreenName { get; set; }
 
-        [Required(ErrorMessage = "Must enter Email.")]
+        [Required(ErrorMessage = "Must enter Email.")]// msdn.microsoft.com/en-us/library/01escwtf(v=vs.100).aspx
+        [RegularExpression(@"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$",
+            ErrorMessage ="Invalid Email.")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 

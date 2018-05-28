@@ -21,32 +21,41 @@
     <div class="col-3 menu">
     </div>
     <div class="col-6">
-        <form asp-controller="User" asp-action="Register" method="post">
+        <form runat="server" asp-controller="User" asp-action="Register" method="post">
 
             <div class="form-group">
                 <label asp-for="ScreenName"></label>
                 <input class="form-control" asp-for="ScreenName" />
-                <span asp-validation-for="ScreenName"></span>
+                <span asp-validation-for="ScreenName"></span><span class="error-alert">@if (ViewBag.ScreenNameInUse != null) { @ViewBag.ScreenNameInUse }</span>
             </div>
-            <div class="form-group">
+            <span class="form-group">
                 <label asp-for="Email"></label>
                 <input class="form-control" asp-for="Email" />
                 <span asp-validation-for="Email"></span>
-            </div>
+            </span><span class="error-alert">@if (ViewBag.EmailError != null) { @ViewBag.EmailError }</span>
+            <span class="error-alert">@if (ViewBag.EmailInUse != null) { @ViewBag.EmailInUse }</span>
             <div class="form-group">
                 <label asp-for="Password"></label>
-                <input class="form-control" asp-for="Password" />
+                <input runat="server" type="password" id=txtPWord class="form-control" asp-for="Password" />
                 <span asp-validation-for="Password"></span>
+            </div>
+            <div class="form-group">
+                
+                <input runat="server" type="password" id=txtRePWord class="form-control" />
+                <asp:CompareValidator runat=server
+                                      ControlToValidate=txtRePWord
+                                      ControlToCompare=txtPWord
+                                      ErrorMessage="Passwords do not match." />
             </div>
             <div class="form-group">
                 <label asp-for="PhoneNumber"></label>
                 <input class="form-control" asp-for="PhoneNumber" />
                 <span>(Optional)</span>
-                <span asp-validation-for="PhoneNumber"></span>
+                <span class="error-alert">@if (ViewBag.PhoneNumberError != null) { @ViewBag.PhoneNumberError }</span>
             </div>
 
 
-            <input id="two" type="submit" value="Register!" />
+            <input runat="server" id="two" type="submit" value="Register!" />
 
         </form>
     </div>
