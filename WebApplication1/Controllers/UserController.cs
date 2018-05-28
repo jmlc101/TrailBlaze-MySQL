@@ -28,6 +28,9 @@ namespace WebApplication1.Controllers
             ViewBag.SessionEmail = HttpContext.Session.GetString("_Email");
             ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
             ViewBag.answer = "yes";
+
+            ViewBag.DbSubmissionAlert = TempData["Alert"];
+
             return View();
         }
 
@@ -58,6 +61,11 @@ namespace WebApplication1.Controllers
                 ViewBag.FavoriteRoutes = routes;
                 ViewBag.Favorites = existingFavoriteRelationships;
                 ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
+
+                TempData["Alert"] = TempData["Alert"];
+                ViewBag.DbSubmissionAlert = TempData["Alert"];
+                
+
                 return View("Index");
             }
 
