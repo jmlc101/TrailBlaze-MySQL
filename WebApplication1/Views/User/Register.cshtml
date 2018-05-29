@@ -48,6 +48,7 @@
                 <label asp-for="ConfirmPassword"></label>
                 <input runat=server type="password" id=txtRePWord class="form-control" asp-for="ConfirmPassword"/>
                 <span class="error-alert">@if (ViewBag.PasswordMatchError != null) { @ViewBag.PasswordMatchError }</span>
+                <span asp-validation-for="ConfirmPassword"></span>
                 <div asp:CompareValidator runat=server
                                       ControlToValidate=txtRePWord
                                       ControlToCompare=txtPWord
