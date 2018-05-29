@@ -8,6 +8,7 @@ namespace WebApplication1.ViewModels
 {
     public class SaveRouteViewModel
     {
+
         [Required(ErrorMessage = "Must choose Route Name.")]
         [Display(Name = "Route Name:")]
         public string RouteName { get; set; }

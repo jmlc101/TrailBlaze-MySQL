@@ -42,8 +42,9 @@ namespace WebApplication1.Controllers
 
         public ActionResult SaveRoute()
         {
+            string screenName = HttpContext.Session.GetString("_ScreenName");
+            ViewBag.UserScreenName = screenName;
             ViewBag.SaveRoute = 1;
-            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
             return View();
         }
         // TODO - Make sure User is Logged in in order to save a route! Must check session! 
@@ -422,6 +423,9 @@ namespace WebApplication1.Controllers
                     }
                 }
 
+                string userEmail = HttpContext.Session.GetString("_Email");
+                User user = context.Users.Single(u => u.Email == userEmail);
+
                 Route newRoute = new Route
                 {
                     RouteName = saveRouteViewModel.RouteName,
@@ -429,6 +433,7 @@ namespace WebApplication1.Controllers
                     Waypoints = waypoints,
                     Destination = destination,
                     Review = saveRouteViewModel.Review, // TODO - change this to a list of User's reviews somehow.
+                    CreatedByUser = user.ScreenName 
                 };// TODO - Why would I need to "Clear a ModelState"?
                 //////////////// Serialize the newRoute
                 IFormatter formatter = new BinaryFormatter();
@@ -448,8 +453,7 @@ namespace WebApplication1.Controllers
                 ViewBag.Waypoints = waypoints;
                 ViewBag.Destination = destination;
 
-                string userEmail = HttpContext.Session.GetString("_Email");
-                User user = context.Users.Single(u => u.Email == userEmail);
+
                 ViewBag.UserId = user.ID;
 
                 //return RedirectToAction("DisplaySelectRoute", new { id = newRoute.ID }); // TODO - NEED to REDIRECT TO A CONFIRMATION PAGE TO VERIFY THE MAPPED ROUTE FOR THE USER!!!!!
@@ -476,6 +480,7 @@ namespace WebApplication1.Controllers
                 ? "Are you in production?"
                 : this._secrets.MySecret;
             Route theRoute = route;
+
             ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
             ViewBag.Review = theRoute.Review;
 

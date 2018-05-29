@@ -38,6 +38,11 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        public ActionResult Profile(int id)
+        {
+            return View();
+        }
+
         public ActionResult DisplayFavorites()
         {
             var email = HttpContext.Session.GetString("_Email");
