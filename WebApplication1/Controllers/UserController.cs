@@ -88,6 +88,13 @@ namespace WebApplication1.Controllers
             {
                 int errorCount = 0;
 
+                //Check if "password" and "confirm password" match:
+                if (registerUserViewModel.Password != registerUserViewModel.ConfirmPassword)
+                {
+                    errorCount++;
+                    ViewBag.PasswordMatchError = "Passwords do not match";
+                }
+
                 // Check if Email is already used in DB.
                 IList<User> usersMatchingEmail = context.Users
                     .Where(u => u.Email == registerUserViewModel.Email)

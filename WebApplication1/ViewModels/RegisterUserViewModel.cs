@@ -24,6 +24,10 @@ namespace WebApplication1.ViewModels
         [Display(Name = "Password")]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Must confirm Password.")]
+        [Display(Name = "Confirm Password")]
+        public string ConfirmPassword { get; set; }
+
         public string PhoneNumber { get; set; }
 
         // TODO - Need this "default constructor" for methods later...? look into.
