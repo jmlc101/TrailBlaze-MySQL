@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,8 @@ namespace WebApplication1.Controllers
     public class UserController : Controller
     {
         private JMCapstoneDbContext context;
+        private string formattedPhoneNumber;
+
         public UserController(JMCapstoneDbContext dbContext)
         {
             context = dbContext;
@@ -78,9 +82,77 @@ namespace WebApplication1.Controllers
         }
         [HttpPost] // TODO - Need Better validation on all entry Fields!!.
         public IActionResult Register(RegisterUserViewModel registerUserViewModel)
-        {//TODO - Need to check to see if user already exists in database!
+        {
+
             if (ModelState.IsValid)
             {
+                int errorCount = 0;
+
+                //Check if "password" and "confirm password" match:
+                if (registerUserViewModel.Password != registerUserViewModel.ConfirmPassword)
+                {
+                    errorCount++;
+                    ViewBag.PasswordMatchError = "Passwords do not match";
+                }
+
+                // Check if Email is already used in DB.
+                IList<User> usersMatchingEmail = context.Users
+                    .Where(u => u.Email == registerUserViewModel.Email)
+                    .ToList();
+                if (usersMatchingEmail.Count > 0)
+                {
+                    ViewBag.EmailInUse = "Email is already in use.";
+                    errorCount++;
+                }
+                // Check if Screen Name is already used in DB.
+                IList<User> usersMatchingScreenName = context.Users
+                    .Where(u => u.ScreenName == registerUserViewModel.ScreenName)
+                    .ToList();
+                if (usersMatchingScreenName.Count > 0)
+                {
+                    ViewBag.ScreenNameInUse = "Screen Name is already in use.";
+                    errorCount++;
+                }
+
+
+                //// stackoverflow.com/questions/5342375/regex-email-validation
+                try
+                {
+                    MailAddress m = new MailAddress(registerUserViewModel.Email);
+                }
+                catch (FormatException)
+                {
+                    ViewBag.EmailError = "Invalid Email address.";
+                    errorCount++;
+                    //return View(registerUserViewModel);
+                }
+                ////
+
+                if ( registerUserViewModel.PhoneNumber != null)
+                {
+
+                    ////www.safaribooksonline.com/library/view/regular-expressions-cookbook/9781449327453/ch04s02.html
+                    Regex phoneRegex = new Regex(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$");
+
+                    if (phoneRegex.IsMatch(registerUserViewModel.PhoneNumber))
+                    {
+                        formattedPhoneNumber = phoneRegex.Replace(registerUserViewModel.PhoneNumber, "($1) $2-$3");
+                    }
+                    else
+                    {
+                        // TODO - Invalid phone number ViewBag.error
+                        errorCount++;
+                        ViewBag.PhoneNumberError = "Invalid Phone Number";
+                        //return View(registerUserViewModel);
+                    }
+                    ////
+                }
+
+                if (errorCount > 0)
+                {
+                    return View(registerUserViewModel);
+                }
+
                 var newSalt = HashHelp.GeneratePassword(10);
                 var passwordHash = HashHelp.EncodePassword(registerUserViewModel.Password, newSalt);
                 User newUser = new User
@@ -91,7 +163,7 @@ namespace WebApplication1.Controllers
                     HashCode = newSalt,
                     CreationTime = DateTime.Now,
                     ModificationTime = DateTime.Now,
-                    PhoneNumber = registerUserViewModel.PhoneNumber
+                    PhoneNumber = formattedPhoneNumber
                 };// TODO - Why would I need to "Clear a ModelState"?
                 context.Users.Add(newUser);
                 context.SaveChanges();
