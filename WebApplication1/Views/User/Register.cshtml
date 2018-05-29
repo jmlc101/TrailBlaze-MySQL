@@ -19,13 +19,18 @@
 
 <div class="row">
     <div class="col-3 menu">
+        <p><b>**Screen Name:</b><br />
+        - First character must be a letter.<br/>
+        - May only contain Letters and Numbers<br/>
+        - Length between 6-12 characters.
+        </p>
     </div>
     <div class="col-6">
         <form runat=server asp-controller="User" asp-action="Register" method="post">
 
             <div class="form-group">
                 <label asp-for="ScreenName"></label>
-                <input class="form-control" asp-for="ScreenName" />
+                <input class="form-control" asp-for="ScreenName" />**
                 <span asp-validation-for="ScreenName"></span><span class="error-alert">@if (ViewBag.ScreenNameInUse != null) { @ViewBag.ScreenNameInUse }</span>
             </div>
             <span class="form-group">
