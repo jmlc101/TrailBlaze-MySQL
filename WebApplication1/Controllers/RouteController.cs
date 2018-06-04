@@ -612,14 +612,23 @@ namespace WebApplication1.Controllers
                     .Where(rr => rr.RouteID == theRoute.ID).ToList();
             ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
 
+            List<int> reviewIds = new List<int>();
             foreach (RouteReview routeReview in existingReviewRelationships)
             {
                 int reviewID = routeReview.ReviewID;
-                Review review = (Review)context.Reviews.Single(r => r.ID == reviewID);
-                ViewBag.ReviewBody = review.ReviewBody;
-                ViewBag.ReviewByUser = review.ReviewByUser;
-                ViewBag.Rating = review.Rating;
+                reviewIds.Add(reviewID);
+                //Review review = (Review)context.Reviews.Single(r => r.ID == reviewID);
+                //ViewBag.ReviewBody = review.ReviewBody;
+                //ViewBag.ReviewByUser = review.ReviewByUser;
+                //ViewBag.Rating = review.Rating;
             }
+            List<Review> reviews = new List<Review>();
+            foreach (int reviewId in reviewIds)
+            {
+                Review review = (Review)context.Reviews.Single(r => r.ID == reviewId);
+                reviews.Add(review);
+            }
+            ViewBag.Reviews = reviews;
 
             ViewBag.RouteID = theRoute.ID; // TODO - Can I just pass "theRoute" threw thew View to the and form submission to next controller?
 
@@ -642,7 +651,50 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        
+        public ActionResult EnterReview(SaveFavoriteRouteViewModel saveFavoriteRouteViewModel)
+        {
+            string apiKey = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
+                ? "Are you in production?"
+                : this._secrets.MySecret;
+            Route theRoute = context.Routes.Single(r => r.ID == saveFavoriteRouteViewModel.RouteID);
+            User user = context.Users.Single(u => u.ID == saveFavoriteRouteViewModel.UserID);
+            ViewBag.RouteID = theRoute.ID;
+            ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
+            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddReview(AddReviewViewModel addReviewViewModel)
+        {
+            Review newReview = new Review
+            {
+                ReviewBody = addReviewViewModel.NewReview,
+                ReviewByUser = addReviewViewModel.ReviewAuthor,
+                Rating = addReviewViewModel.Rating
+            };
+            context.Reviews.Add(newReview);
+            context.SaveChanges();
+
+            IList<RouteReview> existingItems = context.RouteReviews
+                    .Where(rr => rr.ReviewID == newReview.ID)
+                    .Where(rr => rr.RouteID == addReviewViewModel.RouteId).ToList();
+            if (existingItems.Count == 0)
+            {
+                //var userID = saveFavoriteRouteViewModel.UserID;
+                //var routeID = saveFavoriteRouteViewModel.RouteID;
+                RouteReview routeReview = new RouteReview
+                {
+                    Review = context.Reviews.Single(r => r.ID == newReview.ID),/// May not work if not in database yet!!!!*************************************
+                    Route = context.Routes.Single(r => r.ID == addReviewViewModel.RouteId)
+                };
+                context.RouteReviews.Add(routeReview);
+                context.SaveChanges();
+            }
+
+
+            return Redirect("/Route/Index");
+        }
 
         public ActionResult SaveFavoriteRoute(SaveFavoriteRouteViewModel saveFavoriteRouteViewModel)
         {
