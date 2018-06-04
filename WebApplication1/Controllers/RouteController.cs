@@ -19,6 +19,9 @@ namespace WebApplication1.Controllers
         // TODO - keep track of hosting environment and its importance!
         private Secrets _secrets { get; }
 
+        public static Review TmpReviewObject { get; set; }
+        public static Route TmpRouteObject { get; set; }
+
         private JMCapstoneDbContext context;
         public RouteController(JMCapstoneDbContext dbContext, IOptions<Secrets> secrets)
         {
@@ -426,17 +429,40 @@ namespace WebApplication1.Controllers
                 string userEmail = HttpContext.Session.GetString("_Email");
                 User user = context.Users.Single(u => u.Email == userEmail);
 
+                var test = saveRouteViewModel.Rating;
+
+                Review newReview = new Review
+                {
+                    ReviewBody = saveRouteViewModel.Review,
+                    ReviewByUser = saveRouteViewModel.ReviewByUser,
+                    Rating = saveRouteViewModel.Rating
+                };
+
+                TmpReviewObject = newReview;
+                /*
+                //////////////// Serialize the newReview
+                IFormatter formatter = new BinaryFormatter();
+                Stream streamA = new FileStream("MyFile.bin",
+                                         FileMode.Create,
+                                         FileAccess.Write, FileShare.None);
+                formatter.Serialize(streamA, newReview);
+                streamA.Close();
+
+                ////////////////////
+                */
+
                 Route newRoute = new Route
                 {
                     RouteName = saveRouteViewModel.RouteName,
                     Origin = origin,
                     Waypoints = waypoints,
                     Destination = destination,
-                    Review = saveRouteViewModel.Review, // TODO - change this to a list of User's reviews somehow.
                     CreatedByUser = user.ScreenName 
                 };// TODO - Why would I need to "Clear a ModelState"?
+                TmpRouteObject = newRoute;
+                /*
                 //////////////// Serialize the newRoute
-                IFormatter formatter = new BinaryFormatter();
+                //IFormatter formatter = new BinaryFormatter();
                 Stream stream = new FileStream("MyFile.bin",
                                          FileMode.Create,
                                          FileAccess.Write, FileShare.None);
@@ -444,7 +470,7 @@ namespace WebApplication1.Controllers
                 stream.Close();
                
                 ////////////////////
-
+                */
 
                 //context.Routes.Add(newRoute);
                 //context.SaveChanges();
@@ -465,8 +491,21 @@ namespace WebApplication1.Controllers
         
         public ActionResult SubmitRoute()
         {
-            /////////Deserialize the newRoute
+            /*
+            /////////Deserialize the newReview
             IFormatter formatter = new BinaryFormatter();
+            Stream streamA = new FileStream("MyFile.bin",
+                                      FileMode.Open,
+                                      FileAccess.Read,
+                                      FileShare.Read);
+            Object tmp = formatter.Deserialize(streamA);
+            Review review = (Review)tmp;
+            streamA.Close();
+
+            /////////
+
+            /////////Deserialize the newRoute
+            //IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream("MyFile.bin",
                                       FileMode.Open,
                                       FileAccess.Read,
@@ -475,17 +514,21 @@ namespace WebApplication1.Controllers
             stream.Close();
 
             /////////
+            */
 
             string apiKey = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
                 ? "Are you in production?"
                 : this._secrets.MySecret;
-            Route theRoute = route;
+            Route theRoute = TmpRouteObject;
+            Review review = TmpReviewObject;
 
             ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
-            ViewBag.Review = theRoute.Review;
+            ViewBag.ReviewBody = review.ReviewBody;
+            ViewBag.ReviewByUser = review.ReviewByUser;
+            ViewBag.Rating = review.Rating;
 
 
-
+            /*
             // Serialize again for next method
             //IFormatter formatter = new BinaryFormatter();
             Stream stream2 = new FileStream("MyFile.bin",
@@ -494,13 +537,34 @@ namespace WebApplication1.Controllers
             formatter.Serialize(stream2, theRoute);
             stream2.Close();
             //////
+
+            // Serialize Review again for next method
+            //IFormatter formatter = new BinaryFormatter();
+            Stream streamB = new FileStream("MyFile.bin",
+                                     FileMode.Create,
+                                     FileAccess.Write, FileShare.None);
+            formatter.Serialize(streamB, review);
+            streamB.Close();
+            //////
+            */
             return View();
         }
         [HttpPost]
         public ActionResult SubmitRoute(SubmitRouteViewModel submitRouteViewModel)
         {
-            //De serialize again
+            /*
+            //De serialize Review again
             IFormatter formatter = new BinaryFormatter();
+            Stream streamB = new FileStream("MyFile.bin",
+                                      FileMode.Open,
+                                      FileAccess.Read,
+                                      FileShare.Read);
+            Review review = (Review)formatter.Deserialize(streamB);
+            streamB.Close();
+            //
+
+            //De serialize again
+            //IFormatter formatter = new BinaryFormatter();
             Stream stream2 = new FileStream("MyFile.bin",
                                       FileMode.Open,
                                       FileAccess.Read,
@@ -508,9 +572,31 @@ namespace WebApplication1.Controllers
             Route route = (Route)formatter.Deserialize(stream2);
             stream2.Close();
             //
+            */
+            Route route = TmpRouteObject;
+            Review review = TmpReviewObject;
+
             context.Routes.Add(route);
             context.SaveChanges();
-            
+            context.Reviews.Add(review);
+            context.SaveChanges();
+
+            IList<RouteReview> existingItems = context.RouteReviews
+                    .Where(rr => rr.ReviewID == review.ID)
+                    .Where(rr => rr.RouteID == route.ID).ToList();
+            if (existingItems.Count == 0)
+            {
+                //var userID = saveFavoriteRouteViewModel.UserID;
+                //var routeID = saveFavoriteRouteViewModel.RouteID;
+                RouteReview routeReview = new RouteReview
+                {
+                    Review = context.Reviews.Single(r => r.ID == review.ID),/// May not work if not in database yet!!!!*************************************
+                    Route = context.Routes.Single(r => r.ID == route.ID)
+                };
+                context.RouteReviews.Add(routeReview);
+                context.SaveChanges();
+            }
+
             TempData["Alert"] = "The Ride Route has been added to Database!";
             
             return Redirect("/User");
@@ -522,8 +608,19 @@ namespace WebApplication1.Controllers
                 ? "Are you in production?"
                 : this._secrets.MySecret;
             Route theRoute = context.Routes.Single(c => c.ID == id);
+            IList<RouteReview> existingReviewRelationships = context.RouteReviews
+                    .Where(rr => rr.RouteID == theRoute.ID).ToList();
             ViewBag.MapUrl = string.Format("https://www.google.com/maps/embed/v1/directions?origin={0} &waypoints={1} &destination={2} &key={3}", theRoute.Origin, theRoute.Waypoints, theRoute.Destination, apiKey);
-            ViewBag.Review = theRoute.Review;
+
+            foreach (RouteReview routeReview in existingReviewRelationships)
+            {
+                int reviewID = routeReview.ReviewID;
+                Review review = (Review)context.Reviews.Single(r => r.ID == reviewID);
+                ViewBag.ReviewBody = review.ReviewBody;
+                ViewBag.ReviewByUser = review.ReviewByUser;
+                ViewBag.Rating = review.Rating;
+            }
+
             ViewBag.RouteID = theRoute.ID; // TODO - Can I just pass "theRoute" threw thew View to the and form submission to next controller?
 
             var email = HttpContext.Session.GetString("_Email");
@@ -570,6 +667,7 @@ namespace WebApplication1.Controllers
                 {
                     //var userID = saveFavoriteRouteViewModel.UserID;
                     //var routeID = saveFavoriteRouteViewModel.RouteID;
+                    
                     UserRoute favRoute = new UserRoute
                     {
                         User = context.Users.Single(u => u.ID == userId),
