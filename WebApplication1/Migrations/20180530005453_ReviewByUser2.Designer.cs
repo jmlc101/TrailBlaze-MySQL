@@ -11,9 +11,10 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(JMCapstoneDbContext))]
-    partial class JMCapstoneDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180530005453_ReviewByUser2")]
+    partial class ReviewByUser2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,11 +66,15 @@ namespace WebApplication1.Migrations
 
                     b.Property<int>("RouteID");
 
+                    b.Property<int?>("UserID");
+
                     b.HasKey("ID");
 
                     b.HasIndex("ReviewID");
 
                     b.HasIndex("RouteID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("RouteReviews");
                 });
@@ -119,9 +124,13 @@ namespace WebApplication1.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebApplication1.Models.Route", "Route")
-                        .WithMany("RouteReviews")
+                        .WithMany()
                         .HasForeignKey("RouteID")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApplication1.Models.User")
+                        .WithMany("RouteReviews")
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.UserRoute", b =>

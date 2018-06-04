@@ -12,6 +12,8 @@ namespace WebApplication1.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<UserRoute> UserRoutes { get; set; }
+        public DbSet<RouteReview> RouteReviews { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         public JMCapstoneDbContext(DbContextOptions<JMCapstoneDbContext> options) : base(options)
         {

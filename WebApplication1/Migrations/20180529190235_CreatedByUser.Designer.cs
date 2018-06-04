@@ -11,30 +11,15 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(JMCapstoneDbContext))]
-    partial class JMCapstoneDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180529190235_CreatedByUser")]
+    partial class CreatedByUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("WebApplication1.Models.Review", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("Rating");
-
-                    b.Property<string>("ReviewBody");
-
-                    b.Property<string>("ReviewByUser");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Reviews");
-                });
 
             modelBuilder.Entity("WebApplication1.Models.Route", b =>
                 {
@@ -47,6 +32,8 @@ namespace WebApplication1.Migrations
 
                     b.Property<string>("Origin");
 
+                    b.Property<string>("Review");
+
                     b.Property<string>("RouteName");
 
                     b.Property<string>("Waypoints");
@@ -54,24 +41,6 @@ namespace WebApplication1.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Routes");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.RouteReview", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ReviewID");
-
-                    b.Property<int>("RouteID");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ReviewID");
-
-                    b.HasIndex("RouteID");
-
-                    b.ToTable("RouteReviews");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.User", b =>
@@ -109,19 +78,6 @@ namespace WebApplication1.Migrations
                     b.HasIndex("RouteID");
 
                     b.ToTable("UserRoutes");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.RouteReview", b =>
-                {
-                    b.HasOne("WebApplication1.Models.Review", "Review")
-                        .WithMany("RouteReviews")
-                        .HasForeignKey("ReviewID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("WebApplication1.Models.Route", "Route")
-                        .WithMany("RouteReviews")
-                        .HasForeignKey("RouteID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WebApplication1.Models.UserRoute", b =>
