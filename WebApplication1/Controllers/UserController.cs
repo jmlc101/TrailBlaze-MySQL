@@ -38,8 +38,15 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        public ActionResult Profile(int id)
+        public ActionResult Profile(string screenname)
         {
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            {
+                return Redirect("/User/LogOn");
+            }
+            User profilesUser = context.Users.Single(u => u.ScreenName == screenname);
+
+            ViewBag.ProfileUserScreenName = profilesUser.ScreenName;
             return View();
         }
 
