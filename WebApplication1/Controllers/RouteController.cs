@@ -653,6 +653,11 @@ namespace WebApplication1.Controllers
 
         public ActionResult EnterReview(SaveFavoriteRouteViewModel saveFavoriteRouteViewModel)
         {
+            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            {
+                return Redirect("/User/LogOn");
+            }
+
             string apiKey = string.IsNullOrEmpty(this._secrets.MySecret) // ViewData "object" not a string, doesn't work in pass to View, must use ViewBag?
                 ? "Are you in production?"
                 : this._secrets.MySecret;
@@ -719,7 +724,7 @@ namespace WebApplication1.Controllers
                 {
                     //var userID = saveFavoriteRouteViewModel.UserID;
                     //var routeID = saveFavoriteRouteViewModel.RouteID;
-                    
+                    try { 
                     UserRoute favRoute = new UserRoute
                     {
                         User = context.Users.Single(u => u.ID == userId),
@@ -731,6 +736,21 @@ namespace WebApplication1.Controllers
                     TempData["Alert"] = "The Ride Route has been added to Your Favorites!";
 
                     return Redirect("/User/DisplayFavorites");
+                    }
+                    catch
+                    {
+                        UserRoute favRoute = new UserRoute
+                        {
+                            User = context.Users.Single(u => u.ID == userId),
+                            Route = context.Routes.Single(r => r.ID == routeId)
+                        };
+                        context.UserRoutes.Add(favRoute);
+                        context.SaveChanges();
+
+                        TempData["Alert"] = "The Ride Route has been added to Your Favorites!";
+
+                        return Redirect("/User/DisplayFavorites");
+                    }
                 }
             }
             return Redirect("/User/DisplayFavorites");
