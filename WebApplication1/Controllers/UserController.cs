@@ -244,6 +244,51 @@ namespace WebApplication1.Controllers
             // TODO - Need a before action handler that checks if user's logged on.
             return Redirect("/User");
         }
+
+        /*
+        public IActionResult SendMessage(string profileUserScreenName)
+        {
+            User recievingUser = context.Users.Single(u => u.ScreenName == profileUserScreenName);
+            string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+            User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+            ViewBag.SendMessge = "Send Message";
+            ViewBag.SendersID = sendingUser.ID;
+            ViewBag.RecieversID = recievingUser.ID;
+            return View();
+        }
+        */
+        [HttpPost]
+        public IActionResult SendMessage(SendMessageViewModel sendMessageViewModel)
+        {
+            if (sendMessageViewModel.ProfileUserScreenName != null)
+            {
+                User recievingUser = context.Users.Single(u => u.ScreenName == sendMessageViewModel.ProfileUserScreenName);
+                string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+                User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+                ViewBag.SendMessge = "Send Message";
+                ViewBag.SendersID = sendingUser.ID;
+                ViewBag.RecieversID = recievingUser.ID;
+                return View();
+            }
+
+            if (sendMessageViewModel.Body != null)
+            { 
+            Message newMessage = new Message
+            {
+
+                CreationTime = DateTime.Now,
+                Body = sendMessageViewModel.Body,
+                ReceiverID = sendMessageViewModel.RecieversID,
+                SendersID = sendMessageViewModel.SendersID
+            };
+
+            context.Messages.Add(newMessage);
+            context.SaveChanges();
+            }
+            
+            return View("/User/Profile/sendMessageViewModel.RecieversID");
+        }
+
         // TODO - ELIMINATE BAD PATHWAYS BELOW!!!
         // TODO - try rewriting to use the functions given below.
         // GET: User/Details/5

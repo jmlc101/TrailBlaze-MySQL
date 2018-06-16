@@ -4,41 +4,63 @@
 @{
 }
 
-<div class="row">
-    <div class="col-2 menu">
-        <ul>
-            <li><input id="two" type="button" value="Send Friend Request" onclick="location.href='@Url.Action("Index", "Route")'" /></li>
-            <li><input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" /></li>
-            <li><input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" /></li>
-            <li><input id="two" type="button" value="Favorite Routes" )'" /></li>
-            <li><input id="two" type="button" value="Send A Message" )'" /></li>
-        </ul>
-    </div>
-    <div class="col-1">
+@model WebApplication1.ViewModels.SendMessageViewModel
+<form asp-controller="Route" asp-action="AddReview" method="post">
+    <div class="row">
+        <div class="col-2 menu">
+            <ul>
+                <li><input id="two" type="button" value="Send Friend Request" onclick="location.href='@Url.Action("Index", "Route")'" /></li>
+                <li><input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" /></li>
+                <li><input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" /></li>
+                <li><input id="two" type="button" value="Favorite Routes" /></li>
+                <li><input id="two" type="submit" asp-for="ProfileUserScreenName" value="Send A Message" onclick="location.href='@Url.Action("SendMessage", "User", new { profileUserScreenName = ViewBag.ProfileUserScreenName })" /></li>
+             </ul>
+        </div>
+        <div class="col-1">
 
-    </div>
+        </div>
 
-    <div class="col-6">
-        <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
-        <p>Picture</p>
-        <p>Stats:</p>
-    </div>
+        <div class="col-6">
+            <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
+            <p>Picture</p>
+            <p>Stats:</p>
+        </div>
 
-    <div class="col-3">
+        <div class="col-3">
 
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="col-3 menu">
-    </div>
-    <div class="col-6">
-
-
+        </div>
     </div>
 
-    <div class="col-3">
 
+    <div class="row">
+        <div class="col-3 menu">
+        </div>
+        <div class="col-6">
+            @if (ViewBag.SendMessage != null)
+            {
+                @ViewBag.SendMessage
+
+
+                <input type="hidden" asp-for="SendersID" value="@ViewBag.SendersID" />
+                <input type="hidden" asp-for="RecieversID" value="@ViewBag.RecieversID" />
+
+
+                <div class="form-group">
+                    <label asp-for="Body"></label>
+                    <textarea class="form-control" asp-for="Body"></textarea>
+                    <span asp-validation-for="Body"></span>
+                </div>
+
+                <input id="two" type="submit" value="Send Message" />
+
+
+
+            }
+
+        </div>
+
+        <div class="col-3">
+
+        </div>
     </div>
-</div>
+</form>
