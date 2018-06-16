@@ -258,9 +258,42 @@ namespace WebApplication1.Controllers
         }
         */
         [HttpPost]
-        public IActionResult SendMessage(SendMessageViewModel sendMessageViewModel)
+        public IActionResult WriteMessage(ProfileViewModel profileViewModel)
         {
-            if (sendMessageViewModel.ProfileUserScreenName != null)
+            if (profileViewModel.SendAMessageButtonCheck == "Send A Message")
+            {
+                User recievingUser = context.Users.Single(u => u.ScreenName == profileViewModel.ProfileUserScreenName);
+                string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+                User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+                ViewBag.SendMessge = "Send Message";
+                ViewBag.SendersID = sendingUser.ID;
+                ViewBag.RecieversID = recievingUser.ID;
+                return View();
+            }
+
+            /*
+            if (profileViewModel.Body != null)
+            {
+                Message newMessage = new Message
+                {
+
+                    CreationTime = DateTime.Now,
+                    Body = profileViewModel.Body,
+                    ReceiverID = profileViewModel.RecieversID,
+                    SendersID = profileViewModel.SendersID
+                };
+
+                context.Messages.Add(newMessage);
+                context.SaveChanges();
+            }
+            */
+            return View(string.Format("Profile?screenname=={0}", profileViewModel.RecieversID));
+        }
+        [HttpPost]
+        public IActionResult SendMessage(WriteMessageViewModel writeMessageViewModel)
+        {
+            /*
+            if (sendMessageViewModel.SendAMessageButtonCheck == "Send A Message")
             {
                 User recievingUser = context.Users.Single(u => u.ScreenName == sendMessageViewModel.ProfileUserScreenName);
                 string sendingUsersEmail = HttpContext.Session.GetString("_Email");
@@ -270,23 +303,24 @@ namespace WebApplication1.Controllers
                 ViewBag.RecieversID = recievingUser.ID;
                 return View();
             }
-
-            if (sendMessageViewModel.Body != null)
+            */
+            if (writeMessageViewModel.Body != null)
             { 
             Message newMessage = new Message
             {
 
                 CreationTime = DateTime.Now,
-                Body = sendMessageViewModel.Body,
-                ReceiverID = sendMessageViewModel.RecieversID,
-                SendersID = sendMessageViewModel.SendersID
+                Body = writeMessageViewModel.Body,
+                ReceiverID = writeMessageViewModel.RecieversID,
+                SendersID = writeMessageViewModel.SendersID
             };
 
             context.Messages.Add(newMessage);
             context.SaveChanges();
             }
-            
-            return View("/User/Profile/sendMessageViewModel.RecieversID");
+
+            //return View("/User/Profile/sendMessageViewModel.RecieversID");
+            return Redirect("/User");
         }
 
         // TODO - ELIMINATE BAD PATHWAYS BELOW!!!
