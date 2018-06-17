@@ -30,6 +30,23 @@ namespace WebApplication1.Controllers
                 return Redirect("/Welcome");
             }
             User user = context.Users.Single(u => u.Email == HttpContext.Session.GetString("_Email"));
+
+            List<Message> unViewedMessages = new List<Message>();
+            foreach (Message message in context.Messages)
+            {
+                if (message.ReceiverID == user.ID)
+                {
+                    if (message.Viewed == false)
+                    {
+                        unViewedMessages.Add(message);
+                    }
+                }
+            }
+            if (unViewedMessages.Count > 0)
+            {
+                string newMessageAlert = string.Format("{0} New!", unViewedMessages.Count);
+                ViewBag.NewMessageAlert = newMessageAlert;
+            }
             ViewBag.User = user;// TODO - with This I can eliminate the two viewbags below. email and screen name.
             ViewBag.SessionEmail = HttpContext.Session.GetString("_Email");
             ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
@@ -68,8 +85,12 @@ namespace WebApplication1.Controllers
                     if (message.ReceiverID == getUser.ID)
                     {
                         getMail.Add(message);
+                        message.Viewed = true;
+                        
                     }
                 }
+                context.SaveChanges();
+                getMail.Reverse();
                 if (getMail.Count() > 0)
                 {
                     // TODO - New Mail? Unread Mail? Replied to Mail?
@@ -390,7 +411,8 @@ namespace WebApplication1.Controllers
                     ReceiverID = writeMessageViewModel.RecieversID,
                     ReceiverScreenName = writeMessageViewModel.ProfileUserScreenName,
                     SendersID = writeMessageViewModel.SendersID,
-                    SenderScreenName = sendingUser.ScreenName
+                    SenderScreenName = sendingUser.ScreenName,
+                    Viewed = false
             };
 
             context.Messages.Add(newMessage);

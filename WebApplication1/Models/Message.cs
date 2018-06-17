@@ -14,5 +14,6 @@ namespace WebApplication1.Models
         public string ReceiverScreenName { get; set; }
         public int SendersID { get; set; }
         public string SenderScreenName { get; set; }
+        public bool Viewed { get; set; }
     }
 }
