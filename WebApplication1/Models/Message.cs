@@ -11,7 +11,8 @@ namespace WebApplication1.Models
         public DateTime CreationTime { get; set; }
         public string Body { get; set; }
         public int ReceiverID { get; set; }
+        public string ReceiverScreenName { get; set; }
         public int SendersID { get; set; }
-
+        public string SenderScreenName { get; set; }
     }
 }

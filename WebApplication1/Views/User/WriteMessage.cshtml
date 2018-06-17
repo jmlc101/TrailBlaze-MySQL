@@ -29,17 +29,16 @@
     <div class="col-3 menu">
     </div>
     <div class="col-6">
-        Hello
+        To @ViewBag.ReceivingUser.ScreenName:
         <form asp-controller="User" asp-action="SendMessage" method="post">
-
+            <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.SendingUserScreenName" />
             <input type="hidden" asp-for="SendersID" value="@ViewBag.SendersID" />
             <input type="hidden" asp-for="RecieversID" value="@ViewBag.RecieversID" />
 
             
 
             <div class="form-group">
-                <label asp-for="Body"></label>
-                <textarea class="form-control" asp-for="Body"></textarea>
+                <textarea class="textarea" asp-for="Body"></textarea>
                 <span asp-validation-for="Body"></span>
             </div>
 
