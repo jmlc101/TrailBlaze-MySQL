@@ -29,6 +29,25 @@ namespace WebApplication1.Controllers
             {
                 return Redirect("/Welcome");
             }
+            User user = context.Users.Single(u => u.Email == HttpContext.Session.GetString("_Email"));
+
+            List<Message> unViewedMessages = new List<Message>();
+            foreach (Message message in context.Messages)
+            {
+                if (message.ReceiverID == user.ID)
+                {
+                    if (message.Viewed == false)
+                    {
+                        unViewedMessages.Add(message);
+                    }
+                }
+            }
+            if (unViewedMessages.Count > 0)
+            {
+                string newMessageAlert = string.Format("{0} New!", unViewedMessages.Count);
+                ViewBag.NewMessageAlert = newMessageAlert;
+            }
+            ViewBag.User = user;// TODO - with This I can eliminate the two viewbags below. email and screen name.
             ViewBag.SessionEmail = HttpContext.Session.GetString("_Email");
             ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
             ViewBag.answer = "yes";
@@ -48,6 +67,74 @@ namespace WebApplication1.Controllers
 
             ViewBag.ProfileUserScreenName = profilesUser.ScreenName;
             return View();
+        }
+
+        public ActionResult DisplayMail()
+        {
+            var email = HttpContext.Session.GetString("_Email");
+            User getUser = context.Users.Single(u => u.Email == email);
+            if (getUser == null)
+            {
+
+            }
+            else
+            {
+                List<Message> getMail = new List<Message>();
+                foreach (Message message in context.Messages)
+                {
+                    if (message.ReceiverID == getUser.ID)
+                    {
+                        getMail.Add(message);
+                        message.Viewed = true;
+                        
+                    }
+                }
+                context.SaveChanges();
+                getMail.Reverse();
+                if (getMail.Count() > 0)
+                {
+                    // TODO - New Mail? Unread Mail? Replied to Mail?
+                    ViewBag.MailList = getMail;
+                }
+                ViewBag.User = getUser;// TODO - with This I can eliminate the two viewbags below. email and screen name.
+                ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
+
+                TempData["Alert"] = TempData["Alert"];
+                ViewBag.DbSubmissionAlert = TempData["Alert"];
+
+
+                return View("Index");
+            }
+
+            return Redirect("/User");
+        }
+
+        public ActionResult RemoveMail(int id)
+        {
+            string email = HttpContext.Session.GetString("_Email");
+            User user = context.Users.Single(u => u.Email == email);
+            List<Message> existingMessages = new List<Message>();
+            var messages = context.Messages.All(m => m.ReceiverID == user.ID);
+            foreach (Message message in context.Messages)
+            {
+                if (message.ReceiverID == user.ID)
+                {
+                    if (message.ID == id)
+                    {
+                        existingMessages.Add(message);
+                    }
+                    
+                }
+            }
+            if (existingMessages.Count != 0)
+            {
+                foreach (Message message in existingMessages)
+                {
+                    context.Messages.Remove(message);
+                }
+                context.SaveChanges();
+            }
+            return Redirect("/User/DisplayMail");
         }
 
         public ActionResult DisplayFavorites()
@@ -187,7 +274,7 @@ namespace WebApplication1.Controllers
             return View(registerUserViewModel);
         }
 
-        public IActionResult Remove()
+        public IActionResult Remove()// TODO - this is unused so far.
         {
             if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
             {
@@ -244,6 +331,98 @@ namespace WebApplication1.Controllers
             // TODO - Need a before action handler that checks if user's logged on.
             return Redirect("/User");
         }
+
+        /*
+        public IActionResult SendMessage(string profileUserScreenName)
+        {
+            User recievingUser = context.Users.Single(u => u.ScreenName == profileUserScreenName);
+            string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+            User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+            ViewBag.SendMessge = "Send Message";
+            ViewBag.SendersID = sendingUser.ID;
+            ViewBag.RecieversID = recievingUser.ID;
+            return View();
+        }
+        */
+        [HttpPost]
+        public IActionResult WriteMessage(ProfileViewModel profileViewModel)
+        {
+            User receivingUser = new User();
+            if (profileViewModel.ProfileUserScreenName != null)
+            {
+                receivingUser = context.Users.Single(u => u.ScreenName == profileViewModel.ProfileUserScreenName);
+                string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+                User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+                ViewBag.ReceivingUser = receivingUser;
+                ViewBag.SendMessge = "Send Message";
+                ViewBag.SendersID = sendingUser.ID;
+                ViewBag.SendingUserScreenName = sendingUser.ScreenName;
+                ViewBag.RecieversID = receivingUser.ID;
+                return View();
+            }
+
+            /*
+            if (profileViewModel.Body != null)
+            {
+                Message newMessage = new Message
+                {
+
+                    CreationTime = DateTime.Now,
+                    Body = profileViewModel.Body,
+                    ReceiverID = profileViewModel.RecieversID,
+                    SendersID = profileViewModel.SendersID
+                };
+
+                context.Messages.Add(newMessage);
+                context.SaveChanges();
+            }
+            */
+            return View(string.Format("Profile?screenname={0}", receivingUser.ScreenName));
+        }
+        [HttpPost]
+        public IActionResult SendMessage(WriteMessageViewModel writeMessageViewModel)
+        {
+            if (HttpContext.Session.GetString("_Email") is null)
+            {
+                return Redirect("/Welcome");
+            }
+            string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+            User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+           
+            /*
+            if (sendMessageViewModel.SendAMessageButtonCheck == "Send A Message")
+            {
+                User recievingUser = context.Users.Single(u => u.ScreenName == sendMessageViewModel.ProfileUserScreenName);
+                string sendingUsersEmail = HttpContext.Session.GetString("_Email");
+                User sendingUser = context.Users.Single(u => u.Email == sendingUsersEmail);
+                ViewBag.SendMessge = "Send Message";
+                ViewBag.SendersID = sendingUser.ID;
+                ViewBag.RecieversID = recievingUser.ID;
+                return View();
+            }
+            */
+            if (writeMessageViewModel.Body != null)
+            {
+                Message newMessage = new Message
+                {
+
+                    CreationTime = DateTime.Now,
+                    Body = writeMessageViewModel.Body,
+                    ReceiverID = writeMessageViewModel.RecieversID,
+                    ReceiverScreenName = writeMessageViewModel.ProfileUserScreenName,
+                    SendersID = writeMessageViewModel.SendersID,
+                    SenderScreenName = sendingUser.ScreenName,
+                    Viewed = false
+            };
+
+            context.Messages.Add(newMessage);
+            context.SaveChanges();
+            }
+
+            //return View("/User/Profile/sendMessageViewModel.RecieversID");
+            return Redirect("/User");
+        }
+
         // TODO - ELIMINATE BAD PATHWAYS BELOW!!!
         // TODO - try rewriting to use the functions given below.
         // GET: User/Details/5

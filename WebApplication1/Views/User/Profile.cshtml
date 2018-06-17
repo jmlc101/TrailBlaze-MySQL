@@ -4,41 +4,45 @@
 @{
 }
 
-<div class="row">
-    <div class="col-2 menu">
-        <ul>
-            <li><input id="two" type="button" value="Send Friend Request" onclick="location.href='@Url.Action("Index", "Route")'" /></li>
-            <li><input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" /></li>
-            <li><input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" /></li>
-            <li><input id="two" type="button" value="Favorite Routes" )'" /></li>
-            <li><input id="two" type="button" value="Send A Message" )'" /></li>
-        </ul>
-    </div>
-    <div class="col-1">
+@model WebApplication1.ViewModels.ProfileViewModel
 
-    </div>
+    <div class="row">
+        <div class="col-2 menu">
+            
+                <input id="two" type="button" value="Send Friend Request" onclick="location.href='@Url.Action("Index", "Route")'" />
+                <input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" />
+                <input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" />
+                <input id="two" type="button" value="Favorite Routes" />
+                <form asp-controller="User" asp-action="WriteMessage" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input id="two" type="submit" asp-for="SendAMessageButtonCheck" value="Send A Message" />
+                </form>
+            
+        </div>
+        <div class="col-1">
 
-    <div class="col-6">
-        <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
-        <p>Picture</p>
-        <p>Stats:</p>
-    </div>
+        </div>
 
-    <div class="col-3">
+        <div class="col-6">
+            <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
+            <p>Picture</p>
+            <p>Stats:</p>
+        </div>
 
-    </div>
-</div>
+        <div class="col-3">
 
-
-<div class="row">
-    <div class="col-3 menu">
-    </div>
-    <div class="col-6">
-
-
+        </div>
     </div>
 
-    <div class="col-3">
 
+    <div class="row">
+        <div class="col-3 menu">
+        </div>
+        <div class="col-6">
+            
+        </div>
+
+        <div class="col-3">
+
+        </div>
     </div>
-</div>

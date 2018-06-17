@@ -11,9 +11,10 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(JMCapstoneDbContext))]
-    partial class JMCapstoneDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180616175959_Message3")]
+    partial class Message3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,13 +32,7 @@ namespace WebApplication1.Migrations
 
                     b.Property<int>("ReceiverID");
 
-                    b.Property<string>("ReceiverScreenName");
-
-                    b.Property<string>("SenderScreenName");
-
                     b.Property<int>("SendersID");
-
-                    b.Property<bool>("Viewed");
 
                     b.HasKey("ID");
 
