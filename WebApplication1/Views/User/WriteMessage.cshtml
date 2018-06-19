@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model WebApplication1.ViewModels.WriteMessageViewModel
+
+
+<div class="row">
+    <div class="col-2 menu">
+
+    </div>
+    <div class="col-1">
+
+    </div>
+
+    <div class="col-6">
+        
+    </div>
+
+    <div class="col-3">
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-3 menu">
+    </div>
+    <div class="col-6">
+        To @ViewBag.ReceivingUser.ScreenName:
+        <form asp-controller="User" asp-action="SendMessage" method="post">
+            <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.SendingUserScreenName" />
+            <input type="hidden" asp-for="SendersID" value="@ViewBag.SendersID" />
+            <input type="hidden" asp-for="RecieversID" value="@ViewBag.RecieversID" />
+
+            
+
+            <div class="form-group">
+                <textarea class="textarea" asp-for="Body"></textarea>
+                <span asp-validation-for="Body"></span>
+            </div>
+
+            <input id="two" type="submit" value="Send Message!" />
+
+        </form>
+
+    </div>
+
+    <div class="col-3">
+
+    </div>
+</div>

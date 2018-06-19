@@ -13,7 +13,7 @@
             @foreach (Route route in ViewBag.Routes)
             {
                 <tr>
-                <td><a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a></td>
+                <td><a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a> | by: <a asp-controller="User" asp-action="Profile" asp-route-screenname="@route.CreatedByUser">@route.CreatedByUser</a></td>
                 </tr>
             }
             </table>

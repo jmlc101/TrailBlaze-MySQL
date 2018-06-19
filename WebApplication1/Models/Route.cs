@@ -13,8 +13,10 @@ namespace WebApplication1.Models
         public string Origin { get; set; }
         public string Waypoints { get; set; }
         public string Destination { get; set; }
-        public string Review { get; set; }
+        public string CreatedByUser { get; set; }
 
         public IList<UserRoute> UserRoutes { get; set; }
+
+        public IList<RouteReview> RouteReviews { get; set; }
     }
 }

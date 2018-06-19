@@ -1,0 +1,61 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model WebApplication1.ViewModels.AddReviewViewModel
+
+@{
+}
+<div class="row">
+    <div class="col-6">
+        @if (ViewBag.MapUrl != null)
+        {
+            <iframe width="580" height="420" frameborder="0" style="border:0" src="@ViewBag.MapUrl"></iframe>
+        }
+    </div>
+
+    <div class="col-6">
+        <form asp-controller="Route" asp-action="AddReview" method="post">
+
+            <input type="hidden" asp-for="ReviewAuthor" value="@ViewBag.UserScreenName" />
+            <input type="hidden" asp-for="RouteId" value="@ViewBag.RouteID" />
+
+            <div class="form-group">
+                <label asp-for="Rating"></label>
+                <select>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <span asp-validation-for="Rating"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewReview"></label>
+                <textarea class="form-control" asp-for="NewReview"></textarea>
+                <span asp-validation-for="NewReview"></span>
+            </div>
+
+            <input id="two" type="submit" value="Submit Review" />
+
+        </form>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-3 menu">
+    </div>
+
+
+    <div class="col-6">
+        <p>ViewBag.Rating</p>
+        <p>ViewBag.ReviewBody</p>
+        <p>ViewBag.ReviewByUser</p>
+    </div>
+    <div class="col-3">
+    </div>
+</div>
+<br />

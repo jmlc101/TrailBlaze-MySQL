@@ -11,72 +11,15 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(JMCapstoneDbContext))]
-    partial class JMCapstoneDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180530010633_RouteReview6")]
+    partial class RouteReview6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("WebApplication1.Models.FriendRequest", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreationTime");
-
-                    b.Property<int>("RequestedUserID");
-
-                    b.Property<string>("RequestedUserScreenName");
-
-                    b.Property<int>("RequestingUserID");
-
-                    b.Property<string>("RequestingUserScreenName");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("FriendRequests");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.Friendships", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ScreenNameA");
-
-                    b.Property<string>("ScreenNameB");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Friendships");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.Message", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Body");
-
-                    b.Property<DateTime>("CreationTime");
-
-                    b.Property<int>("ReceiverID");
-
-                    b.Property<string>("ReceiverScreenName");
-
-                    b.Property<string>("SenderScreenName");
-
-                    b.Property<int>("SendersID");
-
-                    b.Property<bool>("Viewed");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Messages");
-                });
 
             modelBuilder.Entity("WebApplication1.Models.Review", b =>
                 {

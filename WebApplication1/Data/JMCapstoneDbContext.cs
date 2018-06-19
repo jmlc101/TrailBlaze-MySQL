@@ -12,6 +12,11 @@ namespace WebApplication1.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<UserRoute> UserRoutes { get; set; }
+        public DbSet<RouteReview> RouteReviews { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<Friendships> Friendships { get; set; }
 
         public JMCapstoneDbContext(DbContextOptions<JMCapstoneDbContext> options) : base(options)
         {
@@ -20,6 +25,8 @@ namespace WebApplication1.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserRoute>().HasKey(c => new { c.UserID, c.RouteID });
+            
+            
         }
     }
 }

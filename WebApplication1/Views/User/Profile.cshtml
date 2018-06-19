@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model WebApplication1.ViewModels.ProfileViewModel
+
+    <div class="row">
+        <div class="col-2 menu">
+                <form asp-controller="User" asp-action="SendFriendRequest" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input id="two" type="submit" value="Send Friend Request" />
+                </form>
+                <br />
+                <input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" />
+                <br />
+                <input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" />
+                <br />
+                <input id="two" type="button" value="Favorite Routes" />
+                <br />
+                <form asp-controller="User" asp-action="WriteMessage" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input id="two" type="submit" asp-for="SendAMessageButtonCheck" value="Send A Message" />
+                </form>
+            
+        </div>
+        <div class="col-1">
+
+        </div>
+
+        <div class="col-6">
+            <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
+            <p>Picture</p>
+            <p>Stats:</p>
+        </div>
+
+        <div class="col-3">
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-3 menu">
+        </div>
+        <div class="col-6">
+            
+        </div>
+
+        <div class="col-3">
+
+        </div>
+    </div>

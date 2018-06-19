@@ -2,7 +2,6 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model WebApplication1.ViewModels.SaveFavoriteRouteViewModel
-
 @{
 }
 <div class="row">
@@ -12,6 +11,13 @@
             <input type="hidden" asp-for="UserID" value="@ViewBag.UserID" />
             <input type="hidden" asp-for="RouteID" value="@ViewBag.RouteID" />
             <input id="two" type="submit" value="Save Route/Favorite" onclick="location.href='@Url.Action("SaveFavoriteRoute", "Route")'" />
+            
+        </form>
+        <form asp-controller="Route" asp-action="EnterReview" method="post">
+            <input type="hidden" asp-for="UserID" value="@ViewBag.UserID" />
+            <input type="hidden" asp-for="RouteID" value="@ViewBag.RouteID" />
+            <input id="two" type="submit" value="Add Review" onclick="location.href='@Url.Action("AddReview", "Route")'" />
+
         </form>
     </div>
     <div class="col-1">
@@ -39,7 +45,13 @@
 
 
     <div class="col-6">
-        <p>@ViewBag.Review</p>
+        @foreach (Review review in ViewBag.Reviews)
+        {
+            <p>@review.Rating</p>
+            <p>@review.ReviewBody</p>
+            <p>@review.ReviewByUser</p>
+            <hr />
+        }
     </div>
     <div class="col-3">
     </div>

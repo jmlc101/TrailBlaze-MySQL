@@ -8,6 +8,13 @@ namespace WebApplication1.ViewModels
 {
     public class SaveRouteViewModel
     {
+        
+        public string ReviewByUser { get; set; }
+
+        [Required(ErrorMessage = "Please Select Rating.")]
+        [Display(Name = "Rating:")]
+        public int Rating { get; set; }
+
         [Required(ErrorMessage = "Must choose Route Name.")]
         [Display(Name = "Route Name:")]
         public string RouteName { get; set; }
