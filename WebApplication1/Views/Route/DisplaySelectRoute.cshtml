@@ -25,7 +25,14 @@
     </div>
     <div class="welcomeClass">
         <div class="col-6">
-            
+            @if (ViewBag.ReviewAddedAlert != null)
+            {
+                <div class="error-alert">
+                    @ViewBag.ReviewAddedAlert
+                </div>
+                <hr />
+            }
+
             @if (ViewBag.MapUrl != null)
             {
                 <iframe width="580" height="420" frameborder="0" style="border:0" src="@ViewBag.MapUrl"></iframe>

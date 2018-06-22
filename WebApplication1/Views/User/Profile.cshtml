@@ -12,13 +12,10 @@
                     <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
                     <input id="two" type="submit" value="Send Friend Request" />
                 </form>
-                <br />
                 <input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" />
-                <br />
                 <input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" />
-                <br />
                 <input id="two" type="button" value="Favorite Routes" />
-                <br />
+               
                 <form asp-controller="User" asp-action="WriteMessage" method="post">
                     <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
                     <input id="two" type="submit" asp-for="SendAMessageButtonCheck" value="Send A Message" />

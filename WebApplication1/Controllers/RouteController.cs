@@ -35,6 +35,10 @@ namespace WebApplication1.Controllers
             List<Route> routes = new List<Route>();
             ViewBag.Routes = context.Routes.ToList<Route>();
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            if (ViewBag.UserScreenName == null)
+            {
+                ViewBag.UnLoggedNavigation = true;
+            }
             return View();
         }
 
@@ -648,6 +652,7 @@ namespace WebApplication1.Controllers
             }
 
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            ViewBag.ReviewAddedAlert = TempData["Alert"];
             return View();
         }
 
@@ -695,10 +700,11 @@ namespace WebApplication1.Controllers
                 };
                 context.RouteReviews.Add(routeReview);
                 context.SaveChanges();
+                TempData["Alert"] = "New Review has been posted!";
             }
 
 
-            return Redirect("/Route/Index");
+            return Redirect(string.Format("/Route/DisplaySelectRoute?id={0}", addReviewViewModel.RouteId));
         }
 
         public ActionResult SaveFavoriteRoute(SaveFavoriteRouteViewModel saveFavoriteRouteViewModel)

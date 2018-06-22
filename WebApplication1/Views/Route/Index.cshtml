@@ -9,14 +9,6 @@
 
 
         <div class="col-6">
-            <table id="routeList">
-            @foreach (Route route in ViewBag.Routes)
-            {
-                <tr>
-                <td><a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a> | by: <a asp-controller="User" asp-action="Profile" asp-route-screenname="@route.CreatedByUser">@route.CreatedByUser</a></td>
-                </tr>
-            }
-            </table>
         </div>
 
         <div class="col-3">
@@ -31,6 +23,13 @@
 
 
     <div class="col-6">
+        <div class="box">
+        @foreach (Route route in ViewBag.Routes)
+            {
+                <span><a class="route-name" asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a> | by: <a asp-controller="User" asp-action="Profile" asp-route-screenname="@route.CreatedByUser">@route.CreatedByUser</a></span>
+                <hr />
+            }
+        </div>
     </div>
     <div class="col-3">
     </div>

@@ -125,6 +125,7 @@
             }
 
         #two{
+            margin: 12px;
             display: inline-block;
             padding: 5px 25px;
             font-size: 16px;
@@ -154,6 +155,7 @@
                 transform: translateY(4px);
             }
         #three {
+            margin: 6px;
             display: inline-block;
             padding: 5px 25px;
             font-size: 12px;
@@ -227,6 +229,9 @@
             text-align: justify;
             background: transparent;
         }
+        .route-name {
+            font-size: large;
+        }
     </style>
 
 </head>
@@ -241,13 +246,17 @@
             }
             @if (ViewBag.SessionScreenName != null)
             {
-                <h1>Hello @ViewBag.SessionScreenName!!!</h1>
+                <h1>Hello @ViewBag.SessionScreenName!</h1>
 
             }
             @if (ViewBag.SaveRoute != null)
             {
                 <h1>Save A New Route!</h1>
 
+            }
+            @if (ViewBag.UnLoggedNavigation != null)
+            {
+                <div class="col-5" id="homePageLink"><a asp-controller="User" asp-action="LogOn">LogOn</a></div>
             }
         </header>
     </div>
