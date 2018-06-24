@@ -128,6 +128,16 @@ namespace WebApplication1.Controllers
             return Redirect("/User");
         }
 
+        public ActionResult DenyFriendRequest(int id)
+        {
+            FriendRequest friendRequest = context.FriendRequests.Single(fr => fr.ID == id);
+            context.FriendRequests.Remove(friendRequest);
+            context.SaveChanges();
+
+            TempData["Alert"] = "Denied friend request.";
+            return Redirect("/User");
+        }
+
         public ActionResult AcceptFriendRequest(ProfileViewModel profileViewModel)
         {
             User requestor = context.Users.Single(u => u.ScreenName == profileViewModel.ProfileUserScreenName);
