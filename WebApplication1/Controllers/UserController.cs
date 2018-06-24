@@ -385,7 +385,9 @@ namespace WebApplication1.Controllers
                     HashCode = newSalt,
                     CreationTime = DateTime.Now,
                     ModificationTime = DateTime.Now,
-                    PhoneNumber = formattedPhoneNumber
+                    PhoneNumber = formattedPhoneNumber,
+                    TrailsBlazed = 0,
+                    ReviewsMade = 0
                 };// TODO - Why would I need to "Clear a ModelState"?
                 context.Users.Add(newUser);
                 context.SaveChanges();

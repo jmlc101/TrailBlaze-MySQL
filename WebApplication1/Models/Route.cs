@@ -14,6 +14,7 @@ namespace WebApplication1.Models
         public string Waypoints { get; set; }
         public string Destination { get; set; }
         public string CreatedByUser { get; set; }
+        public string BriefDescription { get; set; }
 
         public IList<UserRoute> UserRoutes { get; set; }
 

@@ -458,6 +458,7 @@ namespace WebApplication1.Controllers
                 Route newRoute = new Route
                 {
                     RouteName = saveRouteViewModel.RouteName,
+                    BriefDescription = saveRouteViewModel.BriefDescription,
                     Origin = origin,
                     Waypoints = waypoints,
                     Destination = destination,
@@ -584,6 +585,10 @@ namespace WebApplication1.Controllers
             context.SaveChanges();
             context.Reviews.Add(review);
             context.SaveChanges();
+            User getUser = context.Users.Single(u => u.Email == (HttpContext.Session.GetString("_Email")));
+            getUser.TrailsBlazed += 1;
+            getUser.ReviewsMade += 1;
+            context.SaveChanges();
 
             IList<RouteReview> existingItems = context.RouteReviews
                     .Where(rr => rr.ReviewID == review.ID)
@@ -684,6 +689,9 @@ namespace WebApplication1.Controllers
                 Rating = addReviewViewModel.Rating
             };
             context.Reviews.Add(newReview);
+            context.SaveChanges();
+            User getUser = context.Users.Single(u => u.Email == (HttpContext.Session.GetString("_Email")));
+            getUser.ReviewsMade += 1;
             context.SaveChanges();
 
             IList<RouteReview> existingItems = context.RouteReviews
