@@ -209,9 +209,35 @@ namespace WebApplication1.Controllers
                     }
                 }
             }
-            
-
             ViewBag.ProfileUserScreenName = profilesUser.ScreenName;
+            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Profile(ProfileViewModel profileViewModel)
+        {
+            // TODO - Do I need check that ViewModel isValid?
+            User profilesUser = context.Users.Single(u => u.ScreenName == profileViewModel.ProfileUserScreenName);
+            List<Route> favoriteRoutes = new List<Route>();
+            if (profileViewModel.StatsButtonCheck != null)
+            {
+                ViewBag.Stats = profilesUser;
+            }
+            else if (profileViewModel.FavoriteRoutesButtonCheck != null)
+            {
+                foreach (UserRoute favorite in context.UserRoutes)
+                {
+                    if (favorite.UserID == profilesUser.ID)
+                    {
+                        Route route = context.Routes.Single(r => r.ID == favorite.RouteID);
+                        favoriteRoutes.Add(route);
+                    }
+                }
+                ViewBag.FavoriteRoutes = favoriteRoutes;
+            }
+            ViewBag.IsFriends = true;
+            ViewBag.ProfileUserScreenName = profileViewModel.ProfileUserScreenName;
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
             return View();
         }

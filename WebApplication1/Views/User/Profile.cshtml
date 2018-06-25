@@ -17,8 +17,16 @@
 
             }
             else {
-                <input id="two" type="button" value="Stats/Info" onclick="location.href='@Url.Action("SaveRoute", "Route")'" />
-                <input id="two" type="button" value="Favorite Routes" />
+                <form asp-controller="User" asp-action="Profile" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input type="hidden" asp-for="StatsButtonCheck" value="true" />
+                    <input id="two" type="submit" value="Stats/Info" />
+                </form>
+                <form asp-controller="User" asp-action="Profile" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input type="hidden" asp-for="FavoriteRoutesButtonCheck" value="true" />
+                    <input id="two" type="submit" value="Favorite Routes" />
+                </form>
                 <form asp-controller="User" asp-action="WriteMessage" method="post">
                     <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
                     <input id="two" type="submit" asp-for="SendAMessageButtonCheck" value="Send A Message" />
@@ -37,6 +45,20 @@
             <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
             <p>Picture</p>
             <p>Stats:</p>
+            @if (ViewBag.Stats != null)
+            {
+                <p>stats!</p>
+
+            }
+            @if (ViewBag.FavoriteRoutes != null)
+            {
+                @foreach (Route route in ViewBag.FavoriteRoutes)
+                {
+                  <span><a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a> | by: <a asp-controller="User" asp-action="Profile" asp-route-screenname="@route.CreatedByUser">@route.CreatedByUser</a></span>
+                    <hr />
+                }
+
+            }
         </div>
 
         <div class="col-3">
