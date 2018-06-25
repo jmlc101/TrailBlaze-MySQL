@@ -191,11 +191,25 @@ namespace WebApplication1.Controllers
 
         public ActionResult Profile(string screenname)
         {
-            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            string userEmail = HttpContext.Session.GetString("_Email");
+            if (userEmail is null) // TODO - Is there a better way to filter this?
             {
                 return Redirect("/User/LogOn");
             }
+            User activeUser = context.Users.Single(u => u.Email == userEmail);
             User profilesUser = context.Users.Single(u => u.ScreenName == screenname);
+
+            foreach (var item in context.Friendships)
+            {
+                if (item.ScreenNameA == profilesUser.ScreenName || item.ScreenNameA == activeUser.ScreenName)
+                {
+                    if (item.ScreenNameB == profilesUser.ScreenName || item.ScreenNameB == activeUser.ScreenName)
+                    {
+                        ViewBag.IsFriends = true;
+                    }
+                }
+            }
+            
 
             ViewBag.ProfileUserScreenName = profilesUser.ScreenName;
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
