@@ -68,6 +68,8 @@ namespace WebApplication1.Controllers
             ViewBag.User = user;// TODO - with This I can eliminate the two viewbags below. email and screen name.
             ViewBag.SessionEmail = HttpContext.Session.GetString("_Email");
             ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
+            ViewBag.TrailsBlazed = user.TrailsBlazed;
+            ViewBag.ReviewsMade = user.ReviewsMade;
             ViewBag.answer = "yes";
 
             ViewBag.DbSubmissionAlert = TempData["Alert"];
@@ -223,6 +225,8 @@ namespace WebApplication1.Controllers
             if (profileViewModel.StatsButtonCheck != null)
             {
                 ViewBag.Stats = profilesUser;
+                ViewBag.TrailsBlazed = profilesUser.TrailsBlazed;
+                ViewBag.ReviewsMade = profilesUser.ReviewsMade;
             }
             else if (profileViewModel.FavoriteRoutesButtonCheck != null)
             {

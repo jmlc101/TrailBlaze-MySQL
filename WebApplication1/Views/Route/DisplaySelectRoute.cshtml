@@ -54,9 +54,9 @@
     <div class="col-6">
         @foreach (Review review in ViewBag.Reviews)
         {
-            <p>@review.Rating</p>
-            <p>@review.ReviewBody</p>
-            <p>@review.ReviewByUser</p>
+            <p><b>Rating:</b> @review.Rating</p>
+            <p><b>Review:</b> @review.ReviewBody</p>
+            <p><b>Submitted by:</b> @review.ReviewByUser</p>
             <hr />
         }
     </div>

@@ -240,14 +240,16 @@
         <header>
             @if (ViewBag.UserScreenName != null)
             {
-            <div class="col-5" id="homePageLink"><a asp-controller="User" asp-action="index">@ViewBag.UserScreenName's Home Page</a></div>
-            <div class="col-7" id="logOffLink"><a asp-controller="User" asp-action="LogOff">LogOff</a></div>
-
+                <span>
+                <a id="two" asp-controller="User" asp-action="index">@ViewBag.UserScreenName's Home Page</a> | 
+                <a id="two" asp-controller="User" asp-action="LogOff">LogOff</a>
+                </span>
             }
             @if (ViewBag.SessionScreenName != null)
             {
+                
                 <h1>Hello @ViewBag.SessionScreenName!</h1>
-
+                <span>Trails Blazed: @ViewBag.TrailsBlazed | Reviews Made: @ViewBag.ReviewsMade</span>
             }
             @if (ViewBag.SaveRoute != null)
             {
@@ -256,7 +258,7 @@
             }
             @if (ViewBag.UnLoggedNavigation != null)
             {
-                <div class="col-5" id="homePageLink"><a asp-controller="User" asp-action="LogOn">LogOn</a></div>
+                <div id="two"><a asp-controller="User" asp-action="LogOn">LogOn</a></div>
             }
         </header>
     </div>
