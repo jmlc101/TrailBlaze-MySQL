@@ -19,6 +19,11 @@ namespace WebApplication1.ViewModels
         [Display(Name = "Route Name:")]
         public string RouteName { get; set; }
 
+        [Required(ErrorMessage = "Enter a Brief Description")]
+        [Display(Name = "Brief Description")]
+        [StringLength(50, ErrorMessage = "The Brief Description cannot exceed 50 characters. ")]
+        public string BriefDescription { get; set; }
+
         [Required(ErrorMessage = "Must enter Route Origin.")]
         [Display(Name = "Starting Point:")]
         public string Origin { get; set; }

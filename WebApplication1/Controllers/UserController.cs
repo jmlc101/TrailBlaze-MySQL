@@ -68,6 +68,8 @@ namespace WebApplication1.Controllers
             ViewBag.User = user;// TODO - with This I can eliminate the two viewbags below. email and screen name.
             ViewBag.SessionEmail = HttpContext.Session.GetString("_Email");
             ViewBag.SessionScreenName = HttpContext.Session.GetString("_ScreenName");
+            ViewBag.TrailsBlazed = user.TrailsBlazed;
+            ViewBag.ReviewsMade = user.ReviewsMade;
             ViewBag.answer = "yes";
 
             ViewBag.DbSubmissionAlert = TempData["Alert"];
@@ -128,6 +130,16 @@ namespace WebApplication1.Controllers
             return Redirect("/User");
         }
 
+        public ActionResult DenyFriendRequest(int id)
+        {
+            FriendRequest friendRequest = context.FriendRequests.Single(fr => fr.ID == id);
+            context.FriendRequests.Remove(friendRequest);
+            context.SaveChanges();
+
+            TempData["Alert"] = "Denied friend request.";
+            return Redirect("/User");
+        }
+
         public ActionResult AcceptFriendRequest(ProfileViewModel profileViewModel)
         {
             User requestor = context.Users.Single(u => u.ScreenName == profileViewModel.ProfileUserScreenName);
@@ -181,13 +193,55 @@ namespace WebApplication1.Controllers
 
         public ActionResult Profile(string screenname)
         {
-            if (HttpContext.Session.GetString("_Email") is null) // TODO - Is there a better way to filter this?
+            string userEmail = HttpContext.Session.GetString("_Email");
+            if (userEmail is null) // TODO - Is there a better way to filter this?
             {
                 return Redirect("/User/LogOn");
             }
+            User activeUser = context.Users.Single(u => u.Email == userEmail);
             User profilesUser = context.Users.Single(u => u.ScreenName == screenname);
 
+            foreach (var item in context.Friendships)
+            {
+                if (item.ScreenNameA == profilesUser.ScreenName || item.ScreenNameA == activeUser.ScreenName)
+                {
+                    if (item.ScreenNameB == profilesUser.ScreenName || item.ScreenNameB == activeUser.ScreenName)
+                    {
+                        ViewBag.IsFriends = true;
+                    }
+                }
+            }
             ViewBag.ProfileUserScreenName = profilesUser.ScreenName;
+            ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Profile(ProfileViewModel profileViewModel)
+        {
+            // TODO - Do I need check that ViewModel isValid?
+            User profilesUser = context.Users.Single(u => u.ScreenName == profileViewModel.ProfileUserScreenName);
+            List<Route> favoriteRoutes = new List<Route>();
+            if (profileViewModel.StatsButtonCheck != null)
+            {
+                ViewBag.Stats = profilesUser;
+                ViewBag.TrailsBlazed = profilesUser.TrailsBlazed;
+                ViewBag.ReviewsMade = profilesUser.ReviewsMade;
+            }
+            else if (profileViewModel.FavoriteRoutesButtonCheck != null)
+            {
+                foreach (UserRoute favorite in context.UserRoutes)
+                {
+                    if (favorite.UserID == profilesUser.ID)
+                    {
+                        Route route = context.Routes.Single(r => r.ID == favorite.RouteID);
+                        favoriteRoutes.Add(route);
+                    }
+                }
+                ViewBag.FavoriteRoutes = favoriteRoutes;
+            }
+            ViewBag.IsFriends = true;
+            ViewBag.ProfileUserScreenName = profileViewModel.ProfileUserScreenName;
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
             return View();
         }
@@ -385,7 +439,9 @@ namespace WebApplication1.Controllers
                     HashCode = newSalt,
                     CreationTime = DateTime.Now,
                     ModificationTime = DateTime.Now,
-                    PhoneNumber = formattedPhoneNumber
+                    PhoneNumber = formattedPhoneNumber,
+                    TrailsBlazed = 0,
+                    ReviewsMade = 0
                 };// TODO - Why would I need to "Clear a ModelState"?
                 context.Users.Add(newUser);
                 context.SaveChanges();

@@ -27,5 +27,9 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\StyleSheet.css" />
+  </ItemGroup>
   
 </Project>

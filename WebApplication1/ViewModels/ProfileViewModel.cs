@@ -16,5 +16,10 @@ namespace WebApplication1.ViewModels
         public string ProfileUserScreenName { get; set; }
 
         public string SendAMessageButtonCheck { get; set; }
+
+        public string StatsButtonCheck { get; set; }
+
+        public string FavoriteRoutesButtonCheck { get; set; }
+
     }
 }
