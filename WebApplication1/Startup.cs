@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebEssentials.AspNetCore.Pwa;
 
 namespace WebApplication1
 {
@@ -39,7 +41,15 @@ namespace WebApplication1
                 options.IdleTimeout = TimeSpan.FromMinutes(20);//You can set Time   
             });
 
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                options.HttpsPort = 8080;
+            });
+
             services.AddMvc();
+
+            services.AddProgressiveWebApp();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,12 +86,16 @@ namespace WebApplication1
 
             app.UseSession(); // TODO - added as per "session" guide
 
+            // TODO - change this to control first page accessed?
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Welcome}/{action=Index}/{id?}");
             });
+
+            app.UseHttpsRedirection();
+
         }
     }
 }

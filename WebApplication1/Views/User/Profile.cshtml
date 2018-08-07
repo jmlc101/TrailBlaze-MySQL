@@ -8,21 +8,33 @@
 
     <div class="row">
         <div class="col-2 menu">
+            @if (ViewBag.IsFriends != true)
+            {
                 <form asp-controller="User" asp-action="SendFriendRequest" method="post">
                     <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
                     <input id="two" type="submit" value="Send Friend Request" />
                 </form>
-                <br />
-                <input id="two" type="button" value="Trails Blazed" onclick="location.href='@Url.Action("SaveRoute", "Route")'" />
-                <br />
-                <input id="two" type="button" value="Reviews Made" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" />
-                <br />
-                <input id="two" type="button" value="Favorite Routes" />
-                <br />
+
+            }
+            else {
+                <form asp-controller="User" asp-action="Profile" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input type="hidden" asp-for="StatsButtonCheck" value="true" />
+                    <input id="two" type="submit" value="Stats/Info" />
+                </form>
+                <form asp-controller="User" asp-action="Profile" method="post">
+                    <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
+                    <input type="hidden" asp-for="FavoriteRoutesButtonCheck" value="true" />
+                    <input id="two" type="submit" value="Favorite Routes" />
+                </form>
                 <form asp-controller="User" asp-action="WriteMessage" method="post">
                     <input type="hidden" asp-for="ProfileUserScreenName" value="@ViewBag.ProfileUserScreenName" />
                     <input id="two" type="submit" asp-for="SendAMessageButtonCheck" value="Send A Message" />
                 </form>
+
+            }
+                
+                
             
         </div>
         <div class="col-1">
@@ -33,6 +45,20 @@
             <p>@ViewBag.ProfileUserScreenName's Proflie.</p>
             <p>Picture</p>
             <p>Stats:</p>
+            @if (ViewBag.Stats != null)
+            {
+                <p>Trails Blazed: @ViewBag.TrailsBlazed</p>
+                <p>Reviews Made: @ViewBag.ReviewsMade</p>
+            }
+            @if (ViewBag.FavoriteRoutes != null)
+            {
+                @foreach (Route route in ViewBag.FavoriteRoutes)
+                {
+                  <span><a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a> | by: <a asp-controller="User" asp-action="Profile" asp-route-screenname="@route.CreatedByUser">@route.CreatedByUser</a></span>
+                    <hr />
+                }
+
+            }
         </div>
 
         <div class="col-3">

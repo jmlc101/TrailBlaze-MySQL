@@ -18,6 +18,11 @@
                 <span asp-validation-for="RouteName"></span>
             </div>
             <div class="form-group">
+                <label asp-for="BriefDescription"></label>
+                <input class="form-control" asp-for="BriefDescription" />
+                <span asp-validation-for="BriefDescription"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Origin"></label>
                 <input class="form-control" asp-for="Origin" />
                 <span asp-validation-for="Origin"></span>
@@ -171,7 +176,7 @@
             <p>Example: "Clearwater Beach, Tampa Florida"</p>
             <div class="form-group">
                 <label asp-for="Rating"></label>
-                    <select>
+                    <select asp-for="Rating">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>

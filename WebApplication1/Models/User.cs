@@ -18,6 +18,9 @@ namespace WebApplication1.Models
         public DateTime CreationTime { get; set; }
         public DateTime ModificationTime { get; set; }
 
+        public int TrailsBlazed { get; set; }
+        public int ReviewsMade { get; set; }
+
         public IList<UserRoute> UserRoutes { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace WebApplication1
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseSetting("https_port", "8080")
                 .Build();
     }
 }

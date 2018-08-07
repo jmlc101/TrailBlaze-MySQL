@@ -9,17 +9,16 @@
 
 <div class="row">
     <div class="col-2 menu">
-        <ul>
+            <input id="two" type="button" value="Home" onclick="location.href='@Url.Action("Index", "User")'" />
+            <input id="two" type="button" value="Find Routes" onclick="location.href='@Url.Action("Index", "Route")'" />
+            <input id="two" type="button" value="Favorite Routes" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" />
+            <input id="two" type="button" value="Friends" onclick="location.href='@Url.Action("DisplayFriends", "User")'" /><a href="@Url.Action("DisplayFriendRequests", "User")">@ViewBag.FriendRequestAlert</a>
+            <input id="two" type="button" value="Mail" onclick="location.href='@Url.Action("DisplayMail", "User")'" />@ViewBag.NewMessageAlert
 
-            <li><input id="two" type="button" value="Find Routes" onclick="location.href='@Url.Action("Index", "Route")'" /></li>
-            <li><input id="two" type="button" value="Favorite Routes" onclick="location.href='@Url.Action("DisplayFavorites", "User")'" /></li>
-            <li><input id="two" type="button" value="Friends" onclick="location.href='@Url.Action("DisplayFriends", "User")'" /><a href="@Url.Action("DisplayFriendRequests", "User")">@ViewBag.FriendRequestAlert</a></li>
-            <li><input id="two" type="button" value="Mail" onclick="location.href='@Url.Action("DisplayMail", "User")'" />@ViewBag.NewMessageAlert</li>
+            <input id="two" type="button" value="Trail Blaze!" onclick="location.href='@Url.Action("SaveRoute", "Route")'" />
 
-            <li><input id="two" type="button" value="Trail Blaze!" onclick="location.href='@Url.Action("SaveRoute", "Route")'" /></li>
-
-            <li><input id="two" type="button" value="LogOff" onclick="location.href='@Url.Action("LogOff", "User")'" /></li> <!-- TODO - Thank you https://stackoverflow.com/questions/2503923/html-button-calling-an-mvc-controller-and-action-method -->
-        </ul>
+            <input id="two" type="button" value="LogOff" onclick="location.href='@Url.Action("LogOff", "User")'" /><!-- TODO - Thank you https://stackoverflow.com/questions/2503923/html-button-calling-an-mvc-controller-and-action-method -->
+       
     </div>
     <div class="col-1">
 
@@ -35,14 +34,12 @@
         }
             @if (ViewBag.Favorites != null)
             {
+                <h2>Favorite Routes:</h2>
                 <div class="box">
                 
                 @foreach (Route route in ViewBag.FavoriteRoutes)
                 {
-                    
-                    <a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a>
-                        
-                    <a id="logOffLink" asp-controller="Route" asp-action="RemoveFavoriteRoute" asp-route-id="@route.ID">Remove</a>
+                    <span><a asp-controller="Route" asp-action="DisplaySelectRoute" asp-route-id="@route.ID">@route.RouteName</a> | by: <a asp-controller="User" asp-action="Profile" asp-route-screenname="@route.CreatedByUser">@route.CreatedByUser</a> | <a id="logOffLink" asp-controller="Route" asp-action="RemoveFavoriteRoute" asp-route-id="@route.ID">Remove</a></span>
                     <hr />
                 }
                 
@@ -51,6 +48,7 @@
 
         @if (ViewBag.MailList != null)
         {
+            <h2>Mail:</h2>
                 <div class="box">
                     @foreach (Message message in ViewBag.MailList)
                     {
@@ -62,7 +60,7 @@
                             <input type="hidden" asp-for="ProfileUserScreenName" value="@message.SenderScreenName" />
                             <input id="three" type="submit" value="Reply" />
                         </form>
-                        <a id="three" asp-controller="User" asp-action="RemoveMail" asp-route-id="@message.ID">Remove</a>
+                        <a id="three" asp-controller="User" asp-action="RemoveMail" asp-route-id="@message.ID">Delete</a>
                             <hr />
                     }
                 </div>
@@ -71,6 +69,7 @@
 
         @if (ViewBag.FriendRequestList != null)
         {
+            <h2>Friend Requests:</h2>
                 <div class="box">
                     @foreach (FriendRequest request in ViewBag.FriendRequestList)
                     {
@@ -88,6 +87,7 @@
 
         @if (ViewBag.FriendsNames != null)
         {
+            <h2>Friends:</h2>
                 <div class="box">
                     @foreach (string friendsName in ViewBag.FriendsNames)
                     {

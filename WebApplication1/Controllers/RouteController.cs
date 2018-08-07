@@ -35,6 +35,10 @@ namespace WebApplication1.Controllers
             List<Route> routes = new List<Route>();
             ViewBag.Routes = context.Routes.ToList<Route>();
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            if (ViewBag.UserScreenName == null)
+            {
+                ViewBag.UnLoggedNavigation = true;
+            }
             return View();
         }
 
@@ -454,6 +458,7 @@ namespace WebApplication1.Controllers
                 Route newRoute = new Route
                 {
                     RouteName = saveRouteViewModel.RouteName,
+                    BriefDescription = saveRouteViewModel.BriefDescription,
                     Origin = origin,
                     Waypoints = waypoints,
                     Destination = destination,
@@ -580,6 +585,10 @@ namespace WebApplication1.Controllers
             context.SaveChanges();
             context.Reviews.Add(review);
             context.SaveChanges();
+            User getUser = context.Users.Single(u => u.Email == (HttpContext.Session.GetString("_Email")));
+            getUser.TrailsBlazed += 1;
+            getUser.ReviewsMade += 1;
+            context.SaveChanges();
 
             IList<RouteReview> existingItems = context.RouteReviews
                     .Where(rr => rr.ReviewID == review.ID)
@@ -648,6 +657,7 @@ namespace WebApplication1.Controllers
             }
 
             ViewBag.UserScreenName = HttpContext.Session.GetString("_ScreenName");
+            ViewBag.ReviewAddedAlert = TempData["Alert"];
             return View();
         }
 
@@ -680,6 +690,9 @@ namespace WebApplication1.Controllers
             };
             context.Reviews.Add(newReview);
             context.SaveChanges();
+            User getUser = context.Users.Single(u => u.Email == (HttpContext.Session.GetString("_Email")));
+            getUser.ReviewsMade += 1;
+            context.SaveChanges();
 
             IList<RouteReview> existingItems = context.RouteReviews
                     .Where(rr => rr.ReviewID == newReview.ID)
@@ -695,10 +708,11 @@ namespace WebApplication1.Controllers
                 };
                 context.RouteReviews.Add(routeReview);
                 context.SaveChanges();
+                TempData["Alert"] = "New Review has been posted!";
             }
 
 
-            return Redirect("/Route/Index");
+            return Redirect(string.Format("/Route/DisplaySelectRoute?id={0}", addReviewViewModel.RouteId));
         }
 
         public ActionResult SaveFavoriteRoute(SaveFavoriteRouteViewModel saveFavoriteRouteViewModel)
