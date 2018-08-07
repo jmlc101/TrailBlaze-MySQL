@@ -22,6 +22,7 @@
 
 <ItemGroup>
   <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" />
+  <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.33" />
   <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.2" />
 </ItemGroup>
 

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebEssentials.AspNetCore.Pwa;
 
 namespace WebApplication1
 {
@@ -47,6 +48,8 @@ namespace WebApplication1
             });
 
             services.AddMvc();
+
+            services.AddProgressiveWebApp();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,7 +91,7 @@ namespace WebApplication1
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Welcome}/{action=Index}/{id?}");
             });
 
             app.UseHttpsRedirection();
