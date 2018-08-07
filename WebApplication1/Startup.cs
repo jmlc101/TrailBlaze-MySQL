@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,12 @@ namespace WebApplication1
             services.AddDistributedMemoryCache();
             services.AddSession(options => {// TODO - Set Timeout time to lower (1) for testing purposes, when testing User routing based on session status.
                 options.IdleTimeout = TimeSpan.FromMinutes(20);//You can set Time   
+            });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                options.HttpsPort = 8080;
             });
 
             services.AddMvc();
@@ -76,12 +83,16 @@ namespace WebApplication1
 
             app.UseSession(); // TODO - added as per "session" guide
 
+            // TODO - change this to control first page accessed?
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseHttpsRedirection();
+
         }
     }
 }
