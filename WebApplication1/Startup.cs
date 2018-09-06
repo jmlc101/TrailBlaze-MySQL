@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using WebEssentials.AspNetCore.Pwa;
@@ -33,8 +34,8 @@ namespace WebApplication1
             services.Configure<Secrets>(Configuration);
             _apiKey = Configuration["MySecret"];
 
-            services.AddDbContext<JMCapstoneDbContext>(options =>
-    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContextPool<JMCapstoneDbContext>( // replace "YourDbContext" with the class name of your DbContext
+                options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDistributedMemoryCache();
             services.AddSession(options => {// TODO - Set Timeout time to lower (1) for testing purposes, when testing User routing based on session status.
@@ -50,6 +51,8 @@ namespace WebApplication1
             services.AddMvc();
 
             services.AddProgressiveWebApp();
+            // TODO - I'm not sure this below is required. trying to work around LocalDB.
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

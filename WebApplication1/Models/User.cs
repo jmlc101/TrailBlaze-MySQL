@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,7 +9,11 @@ namespace WebApplication1.Models
 {
     public class User
     {
-        public int ID { get; set; }
+        private static int globalID;
+        public int ID { get; set;}
+        public User(){
+            this.ID = Interlocked.Increment(ref globalID);
+        }
         public string ScreenName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

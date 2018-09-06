@@ -33,5 +33,9 @@
   <ItemGroup>
     <None Include="wwwroot\css\StyleSheet.css" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.1" />
+  </ItemGroup>
   
 </Project>
