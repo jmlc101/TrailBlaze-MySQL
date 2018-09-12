@@ -9,6 +9,7 @@ namespace WebApplication1.Models
 {
     public class User
     {
+        // a test
         private static int globalID;
         public int ID { get; set;} // TODO - I FEEL like this should be private. ID private and constructor public?
         public User(){
