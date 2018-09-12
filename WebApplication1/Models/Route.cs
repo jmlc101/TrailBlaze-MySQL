@@ -10,10 +10,10 @@ namespace WebApplication1.Models
     [Serializable]
     public class Route
     {
-        private static int globalID;
+        private static int globalRouteID;
         public int ID { get; set;} // TODO - I FEEL like this should be private. ID private and constructor public?
         public Route(){
-            this.ID = Interlocked.Increment(ref globalID);
+            this.ID = Interlocked.Increment(ref globalRouteID);
         }
         public string RouteName { get; set; }
         public string Origin { get; set; }
