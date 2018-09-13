@@ -9,10 +9,12 @@ namespace WebApplication1.Models
 {
     public class User
     {
-        private static int globalID;
+        
+        
+        private static int globalUserID;
         public int ID { get; set;} // TODO - I FEEL like this should be private. ID private and constructor public?
         public User(){
-            this.ID = Interlocked.Increment(ref globalID);
+            this.ID = Interlocked.Increment(ref globalUserID);
         }
         public string ScreenName { get; set; }
         public string Email { get; set; }
