@@ -9,6 +9,12 @@ namespace WebApplication1.Controllers
 {
     public class WelcomeController : Controller
     {
+        /* TODO - Check out this warning when running app.
+        warn: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[35]
+      No XML encryptor configured. Key {0e25f93a-564f-491c-98d7-6a2fe6ed032d} may be persisted to storage in unencrypted form.
+        */
+        // TODO - update asp.net core version in dependencies? (.csproj)
+
         // GET: Welcome
         public ActionResult Index()
         {
